@@ -40,20 +40,16 @@ export default {
   name: 'DefaultLayout',
   data () {
     return {
-      pageTitle: 'Jerarquización Académica',
       items: [
-        {
-          icon: 'mdi-apps',
+        {         
           title: 'SOLICITUDES',
           to: '/solicitudes'
         },
-        {
-          icon: 'mdi-chart-bubble',
+        {         
           title: 'EVALUACIONES',
           to: '/evaluaciones'
         },
         {
-          icon: 'mdi-chart-bubble',
           title: 'PERFIL',
           to: '/perfil'
         }
