@@ -7,19 +7,31 @@
 
 <script>
     import UserAuthForm from '../components/UserAuthForm';
+    import axios from 'axios';
 
     export default {
         components:{
             UserAuthForm
         },
         methods: {
-            loginUser(userInfo){
-                this.$auth.loginWith('local', {
-                    data: {                        
-                        ...userInfo
-                    }
-                })
-                alert('You pressed login');
+            async loginUser(userInfo){
+                const userData = {
+                    email: userInfo.email,
+                    password: userInfo.password
+                }
+
+                const response = await axios.post("http://localhost:3000/login", userData,
+                {withCredentials: true});
+
+                console.log(response);  
+
+                // try{
+                //     this.$auth.loginWith('local', {
+                //         data: userData,
+                //     }).then((res) => console.log(res));
+                // }catch(e){
+                //     console.log(e);
+                // }   
             }
         }
     }
