@@ -15,8 +15,8 @@ import java.sql.Date;
 public class UsuarioEntity {
     @Id
     private Integer id;
-    private String correo;
-    private String contrasenia;
+    private String email;
+    private String password;
     private String nombre;
     private String rut;
     private String comite;

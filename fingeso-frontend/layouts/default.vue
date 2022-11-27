@@ -1,32 +1,37 @@
 <template>
   <v-app>
-    <v-app-bar      
-      elevation="2"
-      rounded
-      extended
-      extended-height="100%"
-      class="px-4 py-5"
-      app
-    >
-      <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
-      <img class="mr-3" :src="require('../assets/img/usach_logo.svg')" height="60"/>
-      <v-tabs
-        right
-        fixed-tabs
-        color="primary"
-        slider-color="primary"
-        class="d-none d-sm-block"
+    <div v-if="$auth.loggedIn">
+      <v-app-bar      
+        elevation="2"
+        rounded
+        extended
+        extended-height="100%"
+        class="px-4 py-5"
+        app
       >
-        <v-tab
-          v-for="(item, i) in items"
-          :key="i"
-          :to="item.to"          
+        <v-app-bar-title>{{ $auth.user.email }}</v-app-bar-title>
+        <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
+        <img class="mr-3" :src="require('../assets/img/usach_logo.svg')" height="60"/>
+        <v-tabs
+          right
+          fixed-tabs
+          color="primary"
+          slider-color="primary"
+          class="d-none d-sm-block"
         >
-          {{item.title}}
-        </v-tab>
-    
-      </v-tabs>
-    </v-app-bar>
+          <v-tab
+            v-for="(item, i) in items"
+            :key="i"
+            :to="item.to"          
+          >
+            {{item.title}}
+          </v-tab>
+        </v-tabs>
+      </v-app-bar>
+    </div>
+    <div v-else>
+      {{ $router.push("/login") }}
+    </div>
     <v-main>
       <v-container>
         <Nuxt/>

@@ -15,12 +15,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UsuarioRepository usuarioRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException{
-        System.out.println("el correo es " + correo);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException{
+        System.out.println("el correo es " + email);
         UsuarioEntity usuarioEntity = usuarioRepository
-                .findOneByCorreo(correo)
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario con email " + correo + " no existe."));
-        System.out.println("el correo es " + correo);
+                .findOneByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario con email " + email + " no existe."));
+        System.out.println("el correo es " + email);
         return new UserDetailsImpl(usuarioEntity);
     }
 

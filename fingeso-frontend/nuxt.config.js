@@ -41,6 +41,8 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -70,7 +72,27 @@ export default {
       }
     }
   },
+  axios: {
+    baseURL: 'http://localhost:3000',
+    proxy: true
+  },
+  proxy: {
+    '/nuxt': {
+      target: 'nuxt.backend.test',
+      pathRewrite: { '^/nuxt': '/' }
+    }
+  },
 
+  auth: {  
+    strategies: {
+      local: {
+        endpoints: {
+          login: { url:'/login', method:'post', propertyName: 'token'},
+        }
+      }
+    }
+  }
+  ,
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

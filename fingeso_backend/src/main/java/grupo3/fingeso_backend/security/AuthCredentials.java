@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class AuthCredentials {
-    private String correo;
-    private String contrasenia;
+    private String email;
+    private String password;
 
 }

@@ -12,5 +12,5 @@ public interface UsuarioRepository extends CrudRepository<UsuarioEntity, Integer
     @Override
     List<UsuarioEntity> findAll();
 
-    Optional<UsuarioEntity> findOneByCorreo(String correo);
+    Optional<UsuarioEntity> findOneByEmail(String email);
 }

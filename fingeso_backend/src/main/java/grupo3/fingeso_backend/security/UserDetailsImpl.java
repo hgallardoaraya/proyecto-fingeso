@@ -21,12 +21,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return usuarioEntity.getContrasenia();
+        return usuarioEntity.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return usuarioEntity.getCorreo();
+        return usuarioEntity.getEmail();
     }
 
     @Override
