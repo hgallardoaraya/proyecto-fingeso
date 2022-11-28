@@ -1,8 +1,8 @@
 package grupo3.fingeso_backend.controllers;
 
 
-import grupo3.fingeso_backend.entities.Solicitud;
-import grupo3.fingeso_backend.services.SolicitudService;
+import grupo3.fingeso_backend.entities.Comite;
+import grupo3.fingeso_backend.services.ComiteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +12,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping
-public class SolicitudController {
+public class ComiteController {
 
     @Autowired
-    SolicitudService solicitudService;
+    ComiteService comiteService;
 
-    @GetMapping("/solicitud/getAllSolicitudes")
-    public List<Solicitud> getAllSolicitudes(){
-        return solicitudService.listSolicitudes();
+    @GetMapping("/comite/getAllComites")
+    public List<Comite> getAllComites(){
+        return comiteService.getAllComites();
     }
 }

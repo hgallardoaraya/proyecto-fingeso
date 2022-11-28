@@ -1,7 +1,7 @@
 package grupo3.fingeso_backend.controllers;
 
-import grupo3.fingeso_backend.entities.SolicitudEntity;
-import grupo3.fingeso_backend.entities.UsuarioEntity;
+import grupo3.fingeso_backend.entities.Solicitud;
+import grupo3.fingeso_backend.entities.Usuario;
 import grupo3.fingeso_backend.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,15 +18,17 @@ public class UsuarioController {
     UsuarioService usuarioService;
 
     @GetMapping("/usuario/getAllUsuarios")
-    public List<UsuarioEntity> listaUsuarios(){ return usuarioService.listaUsuarios(); }
+    public List<Usuario> listaUsuarios(){ return usuarioService.listaUsuarios(); }
 
-    @GetMapping("/usuario/getSolicitudesByUser/{id}")
-    public List<SolicitudEntity> getSolicitudesByUser(@PathVariable(value = "id") Integer id){
-        return usuarioService.getSolicitudesByUserId(id);
-    };
+//    @GetMapping("/usuario/getSolicitudesByUser/{id}")
+//    public List<Solicitud> getSolicitudesByUser(@PathVariable(value = "id") Integer id){
+//        return usuarioService.getSolicitudesByUserId(id);
+//    };
 
     @GetMapping("/usuario/getUserById/{id}")
-    public Optional<UsuarioEntity> getUserById(@PathVariable(value = "id") Integer id){
+    public Optional<Usuario> getUserById(@PathVariable(value = "id") Integer id){
         return usuarioService.getUserById(id);
     };
+
+
 }

@@ -23,6 +23,8 @@
                 const response = await axios.get(`http://localhost:3000/getUserById/1`);
 
                 console.log(response);  
+
+                
             }
         }
     }

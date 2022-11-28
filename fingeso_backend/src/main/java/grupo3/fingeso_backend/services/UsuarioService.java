@@ -1,6 +1,6 @@
 package grupo3.fingeso_backend.services;
-import grupo3.fingeso_backend.entities.SolicitudEntity;
-import grupo3.fingeso_backend.entities.UsuarioEntity;
+import grupo3.fingeso_backend.entities.Solicitud;
+import grupo3.fingeso_backend.entities.Usuario;
 import grupo3.fingeso_backend.repositories.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +15,15 @@ public class UsuarioService {
     @Autowired
     private final UsuarioRepository usuarioRepository;
 
-    public List<UsuarioEntity> listaUsuarios() { return usuarioRepository.findAll(); }
+    public List<Usuario> listaUsuarios() { return usuarioRepository.findAll(); }
 
-    public List<SolicitudEntity> getSolicitudesByUserId(Integer id){
-        Optional<UsuarioEntity> usuario = usuarioRepository.findById(id);
-        return usuario.get().getSolicitudes();
-    }
+//    public List<Solicitud> getSolicitudesByUserId(Integer id){
+//        Optional<Usuario> usuario = usuarioRepository.findById(id);
+//        return usuario.get().getSolicitudes();
+//    }
 
-    public Optional<UsuarioEntity> getUserById(Integer id){
+    public Optional<Usuario> getUserById(Integer id){
+        System.out.println(usuarioRepository.findById(id).get().getCargo());
         return usuarioRepository.findById(id);
     }
 }

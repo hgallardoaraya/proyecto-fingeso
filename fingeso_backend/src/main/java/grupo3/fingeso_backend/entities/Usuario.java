@@ -1,14 +1,13 @@
 package grupo3.fingeso_backend.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,7 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioEntity {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -33,9 +32,6 @@ public class UsuarioEntity {
 
     @Column(name = "rut")
     private String rut;
-
-    @Column(name = "comite")
-    private String comite;
 
     @Column(name = "departamento")
     private String departamento;
@@ -58,8 +54,17 @@ public class UsuarioEntity {
     @Column(name = "ultima_jerarquia")
     private Date ultima_jerarquia;
 
-    @JsonManagedReference
+    @JsonManagedReference(value="solicitud_usuario")
     @OneToMany(mappedBy = "id_usuario")
-    List<SolicitudEntity> solicitudes;
+    private List<Solicitud> solicitudes;
+
+    @JsonManagedReference(value = "comite_usuario")
+    @ManyToOne
+    @JoinColumn(name = "id_comite")
+    private Comite comite;
+
+//    @JsonManagedReference(value = "usuario_usuario")
+//    @OneToMany(mappedBy = "id")
+//    private List<Usuario> usuariosAEvaluar;
 
 }
