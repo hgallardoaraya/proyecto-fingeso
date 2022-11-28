@@ -20,18 +20,9 @@
                     password: userInfo.password
                 }
 
-                const response = await axios.post("http://localhost:3000/login", userData,
-                {withCredentials: true});
+                const response = await axios.get(`http://localhost:3000/getUserById/1`);
 
                 console.log(response);  
-
-                // try{
-                //     this.$auth.loginWith('local', {
-                //         data: userData,
-                //     }).then((res) => console.log(res));
-                // }catch(e){
-                //     console.log(e);
-                // }   
             }
         }
     }

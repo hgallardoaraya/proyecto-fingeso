@@ -11,6 +11,4 @@ import java.util.Optional;
 public interface UsuarioRepository extends CrudRepository<UsuarioEntity, Integer> {
     @Override
     List<UsuarioEntity> findAll();
-
-    Optional<UsuarioEntity> findOneByEmail(String email);
 }
