@@ -9,10 +9,10 @@ import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
-@Table(name = "solicitudes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "solicitudes")
 public class Solicitud {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +44,9 @@ public class Solicitud {
 
     @Column(name = "resultado_final")
     private String resultado_final;
+
+    @Column(name = "periodo")
+    private Date periodo;
 
     @ManyToOne
     @JoinColumn(name = "id_comite")

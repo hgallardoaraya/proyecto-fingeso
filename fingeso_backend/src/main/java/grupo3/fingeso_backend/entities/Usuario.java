@@ -1,6 +1,5 @@
 package grupo3.fingeso_backend.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,18 +10,18 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "usuarios")
 public class Usuario {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "password")
     private String password;
@@ -62,9 +61,5 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "id_comite")
     private Comite comite;
-
-//    @JsonManagedReference(value = "usuario_usuario")
-//    @OneToMany(mappedBy = "id")
-//    private List<Usuario> usuariosAEvaluar;
 
 }

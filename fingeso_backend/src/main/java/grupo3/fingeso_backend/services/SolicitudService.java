@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SolicitudService {
 
-    @Autowired
     private final SolicitudRepository solicitudRepository;
 
     public List<Solicitud> listSolicitudes() { return solicitudRepository.findAll(); }

@@ -13,7 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ComiteService {
 
-    @Autowired
     private final ComiteRepository comiteRepository;
 
     public List<Comite> getAllComites(){

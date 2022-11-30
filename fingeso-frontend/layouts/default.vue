@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    <div v-if="$auth.loggedIn">
       <v-app-bar      
         elevation="2"
         rounded
@@ -8,13 +7,12 @@
         extended-height="100%"
         class="px-4 py-5"
         app
-      >
-        <v-app-bar-title>{{ $auth.user.email }}</v-app-bar-title>
+      >     
         <v-app-bar-nav-icon class="d-sm-none"></v-app-bar-nav-icon>
         <img class="mr-3" :src="require('../assets/img/usach_logo.svg')" height="60"/>
         <v-tabs
           right
-          fixed-tabs
+          
           color="primary"
           slider-color="primary"
           class="d-none d-sm-block"
@@ -28,10 +26,6 @@
           </v-tab>
         </v-tabs>
       </v-app-bar>
-    </div>
-    <div v-else>
-      {{ $router.push("/login") }}
-    </div>
     <v-main>
       <v-container>
         <Nuxt/>
@@ -41,11 +35,16 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'DefaultLayout',
   data () {
     return {
       items: [
+        {
+          title: 'INICIO',
+          to: '/'
+        },           
         {         
           title: 'SOLICITUDES',
           to: '/solicitudes'
@@ -57,7 +56,7 @@ export default {
         {
           title: 'PERFIL',
           to: '/perfil'
-        }
+        },             
       ],
     }
   }

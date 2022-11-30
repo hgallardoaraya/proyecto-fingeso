@@ -10,16 +10,18 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "comites")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "comites")
 public class Comite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "comite")
-    private String comite;
+    @Column(name = "name")
+    private String name;
 
     @JsonBackReference(value = "comite_usuario")
     @OneToMany(mappedBy = "comite")
