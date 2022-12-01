@@ -13,7 +13,6 @@ public class ProsyscomApplication {
 		SpringApplication.run(ProsyscomApplication.class, args);
 	}
 
-
 	@Bean
 	PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();

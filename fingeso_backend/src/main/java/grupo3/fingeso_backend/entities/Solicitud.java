@@ -1,12 +1,14 @@
 package grupo3.fingeso_backend.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Data
@@ -50,7 +52,11 @@ public class Solicitud {
 
     @ManyToOne
     @JoinColumn(name = "id_comite")
-    @JsonBackReference("solicitud_comite")
+    @JsonBackReference(value="solicitud_comite")
     private Comite comite;
+
+    @JsonManagedReference(value="respaldo-solicitud")
+    @OneToMany(mappedBy = "solicitud")
+    private List<Respaldo> respaldos;
 
 }

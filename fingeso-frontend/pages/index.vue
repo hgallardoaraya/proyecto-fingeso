@@ -1,7 +1,7 @@
 <template>
     <div class="d-flex flex-column">
         <div class="d-flex justify-center align-center py-n16">
-            <img class="mr-3" :src="require('../assets/img/file1.svg')" width="500px" height="500px"/>
+            <img class="mr-3" :src="require('../assets/img/file1.svg')" width="400px"/>
             <div style="width: 500px;">
                 <h2 class="accent--text">Proceso de Jerarquización Académica</h2>
                 <p class="grey--text">Hola {{ nombre }}, te damos la bienvenida a la nueva plataforma web para realizar el proceso de jerarquización académica.</p>
@@ -18,8 +18,8 @@
         </div>
         <div class="d-flex justify-space-around align-center">
             <div class="d-flex flex-column justify-center align-center" style="maxWidth: 300px;">
-                <v-avatar class="mx-16 my-8" color="primary" size="100" >
-                    <v-icon dark size="60">
+                <v-avatar class="mx-16 my-8" color="primary" size="80" >
+                    <v-icon dark size="40">
                         mdi-attachment-check
                     </v-icon>            
                 </v-avatar>                        
@@ -27,8 +27,8 @@
                 <p class="accent--text text-center">Envia tu solicitud adjuntando los archivos de respaldo correspondientes a cada actividad para evaluar tu jerarquía académica.</p>            
             </div>
             <div class="d-flex flex-column justify-center align-center" style="maxWidth: 300px;">
-                <v-avatar class="mx-16 my-8" color="primary" size="100" >
-                    <v-icon dark size="60">
+                <v-avatar class="mx-16 my-8" color="primary" size="80" >
+                    <v-icon dark size="40">
                         mdi-star-box
                     </v-icon>            
                 </v-avatar>                        
@@ -36,8 +36,8 @@
                 <p class="accent--text text-center">Sé parte del proceso puntuando las actividades respaldadas por otros profesores.</p>            
             </div>
             <div class="d-flex flex-column justify-center align-center" style="maxWidth: 300px;">
-                <v-avatar class="mx-16 my-8" color="primary" size="100" >
-                    <v-icon dark size="60">
+                <v-avatar class="mx-16 my-8" color="primary" size="80" >
+                    <v-icon dark size="40">
                         mdi-clipboard-check
                     </v-icon>            
                 </v-avatar>                        

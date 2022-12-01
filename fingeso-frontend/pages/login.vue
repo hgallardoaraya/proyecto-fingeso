@@ -52,7 +52,7 @@
                     })                                                           
                     this.success = true;
                     this.$auth.strategy.token.set(response.data['access_token']);
-                    // this.$router.push("/perfil");
+                    this.$router.push({ path: "/index" });
                 }catch(e){
                     this.success = false;
                 }                

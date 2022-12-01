@@ -1,23 +1,25 @@
 
 <template>
-    <div class="d-flex justify-start flex-column">
-        <h2 class="my-8 accent--text">
-            Mis Solicitudes
-        </h2>
-        <v-data-table
-        style="width: 80%;"
-        :headers="headers"
-        :items="items"
-        :items-per-page="5"
-        item-key="name"
-        class="elevation-1"
-        :footer-props="{
-            showFirstLastPage: true,
-            firstIcon: 'mdi-arrow-collapse-left',
-            lastIcon: 'mdi-arrow-collapse-right',
-            prevIcon: 'mdi-minus',
-            nextIcon: 'mdi-plus'
-        }"
+    <div>
+
+        <div class="d-flex justify-start flex-column" v-if="show === 'solicitudes'">
+            <h2 class="my-8 accent--text">
+                Mis Solicitudes
+            </h2>
+            <v-data-table
+            style="width: 80%;"
+            :headers="headers"
+            :items="items"
+            :items-per-page="5"
+            item-key="name"
+            class="elevation-1"
+            :footer-props="{
+                showFirstLastPage: true,
+                firstIcon: 'mdi-arrow-collapse-left',
+                lastIcon: 'mdi-arrow-collapse-right',
+                prevIcon: 'mdi-minus',
+                nextIcon: 'mdi-plus'
+            }"
         >
     
             <template v-slot:item.accion="{ item }">
@@ -25,17 +27,21 @@
                 class="mr-2"              
                 @click="getSolicitud(item)"  
                 >
-                    mdi-arrow-right-bold
-            </v-icon>            
-        </template>
-    </v-data-table>
+                mdi-arrow-right-bold
+                </v-icon>            
+            </template>
+        </v-data-table>
     </div>
+    <Solicitud v-if="show === 'solicitud'" :solicitud="solicitud"></Solicitud>
+</div>
 </template>
 
 
 <script>
     import axios from 'axios';
     import parseJwt from '../utils/parseJwt';
+    import Solicitud from '../components/Solicitud.vue'
+    
     export default {
         data(){
             return{
@@ -64,7 +70,12 @@
                     
                 ],
                 items: [],
-                solicitudes: []
+                solicitudes: [],
+                solicitud: [],
+                show: "solicitudes",
+                components: {
+                    Solicitud
+                }
             }
         },
         created(){            
@@ -91,18 +102,17 @@
                         this.items.push(row);
                     })
                 }else{                    
-                    this.$router.push("/login");
+                    this.$router.push({ path: "./login" });
                 }                
             }
             fetchUsuario();
         },
         methods: {
             getSolicitud(item){
-                console.log(this.solicitudes, item);
-                console.log(this.solicitudes[item.numero]);
-                this.$router.params = this.solicitudes[item.numero];
-                console.log(this.$router);
-                this.$router.push("/solicitud")
+                this.solicitud = this.solicitudes[item.numero];
+                // this.$router.push({path: "/solicitud", params: { solicitud: this.solicitudes[item.numero] } });
+                console.log(this.$router)
+                this.show = "solicitud";
                 // this.editedItem = Object.assign({}, item)
             }
         }

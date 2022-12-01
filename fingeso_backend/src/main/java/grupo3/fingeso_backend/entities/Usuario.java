@@ -62,4 +62,5 @@ public class Usuario {
     @JoinColumn(name = "id_comite")
     private Comite comite;
 
+
 }

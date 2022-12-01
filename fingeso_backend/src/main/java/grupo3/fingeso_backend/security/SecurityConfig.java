@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "Authorization", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers", "Access-Control-Allow-Methods",
                 "Access-Control-Allow-Origin", "Access-Control-Expose-Headers", "Access-Control-Max-Age",
                 "Access-Control-Request-Headers", "Access-Control-Request-Method", "Age", "Allow", "Alternates",
-                "Content-Range", "Content-Disposition", "Content-Description", "username"));
+                "Content-Range", "Content-Disposition", "Content-Description", "username", "Access"));
+        configuration.addExposedHeader("FileExtension");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

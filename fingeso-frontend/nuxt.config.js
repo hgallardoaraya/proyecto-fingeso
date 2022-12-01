@@ -2,6 +2,7 @@ import colors from 'vuetify/es5/util/colors'
 
 export default {
   middleware: 'auth',
+  ssr: false,
   server: {
     port: 8000
   },
@@ -102,5 +103,5 @@ export default {
   },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
 }
