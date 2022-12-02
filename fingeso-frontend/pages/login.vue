@@ -22,7 +22,8 @@
 
 <script>
     import UserAuthForm from '../components/UserAuthForm';
-    import axios from 'axios';
+    import parseJwt from '../utils/parseJwt';
+    import isAuthenticated from '../utils/isAuthenticated'
 
     export default {
         data(){
@@ -36,26 +37,35 @@
         },
         methods: {
             async loginUser(userInfo){  
+                console.log(userInfo);
                 this.success = null;              
                 const params = new URLSearchParams();
-                params.append('username', userInfo.email);
+                params.append('username', userInfo.username);
                 params.append('password', userInfo.password);                
                 try{
-                    const response = await this.$auth.loginWith('local', {
-                        data: params
-                    });                    
-                    const user = response.data['user'];
-                    console.log(this.$auth);
-                    this.$auth.setUser({
-                        username: userInfo.email,
-                        password: userInfo.password
-                    })                                                           
-                    this.success = true;
-                    this.$auth.strategy.token.set(response.data['access_token']);
-                    this.$router.push({ path: "/index" });
+                    const response = await this.$axios.post("/login", params, { withCredentials: true  });                    
+                    const responseAccessToken = response.data['access_token'];
+                    const responseRefreshToken = response.data['refresh_token'];
+
+                    const { comite, exp, _, sub } = parseJwt(responseAccessToken);                    
+                    const tokenItem = { value: responseAccessToken, expiry: exp };
+                    const loginItem = { username: sub, comite };
+
+                    localStorage.setItem('access_token', JSON.stringify(tokenItem));
+                    localStorage.setItem('refresh_token', responseRefreshToken)
+                    localStorage.setItem('user', JSON.stringify(loginItem));
+
+                    this.success = true;                    
+                    this.$router.push({ path: "/" });
                 }catch(e){
                     this.success = false;
                 }                
+            }
+        },
+        created(){
+            console.log(localStorage.getItem('access_token'));
+            if(isAuthenticated()){
+                this.$router.push({ path: "/" })
             }
         }
     }

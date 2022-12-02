@@ -1,7 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
-  middleware: 'auth',
+  
   ssr: false,
   server: {
     port: 8000
@@ -77,30 +77,30 @@ export default {
   axios: {
     baseURL: 'http://localhost:3000/api',
   },
-  auth: {  
-    strategies: {
-      local: {
-        endpoints: {
-          login: { 
-            url:'/login', 
-            method:'post', 
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-          },
-        },
-        token: {
-          property: 'token',
-          required: false,
-          type: 'Bearer',
+  // auth: {  
+  //   strategies: {
+  //     local: {
+  //       endpoints: {
+  //         login: { 
+  //           url:'/login', 
+  //           method:'post', 
+  //           headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  //         },
+  //       },
+  //       token: {
+  //         property: 'token',
+  //         required: false,
+  //         type: 'Bearer',
         
-        },
-        user: {
-          property: 'user',
-          autoFetch: false,
-          propertyName: false
-        },     
-      },
-    }
-  },
+  //       },
+  //       user: {
+  //         property: 'user',
+  //         autoFetch: false,
+  //         propertyName: false
+  //       },     
+  //     },
+  //   }
+  // },
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },

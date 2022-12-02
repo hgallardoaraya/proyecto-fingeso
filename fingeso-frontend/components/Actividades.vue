@@ -104,19 +104,20 @@
             uploadFile(i, id){
                 console.log(this.fileInputs[i]);
                 this.fileInputs[i].forEach(async (file, j) => {
-                    console.log(file);    
-                    console.log(id);         
                     const formData = new FormData();
                     formData.append('file', file);
                     formData.append('id', id);
                     const headers = {
                         'Content-Type': 'multipart/form-data',                        
                     };
-                    await axios.post('http://localhost:3000/api/uploadFile', formData, { headers }).then((res) => {
-                        console.log(res.data);
+                    console.log(file);    
+                    console.log(id);         
+                    console.log("FormData", formData);
+                    // await axios.post('http://localhost:3000/api/uploadFile', formData, { headers }).then((res) => {
+                    //     console.log(res.data);
                         
                         
-                    });    
+                    // });    
                     console.log(this.fileDownload);
                 })
             }

@@ -3,9 +3,9 @@
     <v-text-field v-model="userInfo.name" 
                   label="Name" 
                   
-                  v-if="hasName" />
+                  v-if="name" />
 
-    <v-text-field v-model="userInfo.email" 
+    <v-text-field v-model="userInfo.username" 
                   label="Email" 
                   />
 
@@ -30,9 +30,9 @@
       return {
         valid: false,
         showPassword: false,
-        hasName: false,
+        name: false,
         userInfo: {
-          email: "",
+          username: "",
           password: ""
         },
         ...validations

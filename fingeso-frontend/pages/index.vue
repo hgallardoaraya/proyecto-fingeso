@@ -57,7 +57,9 @@
             }
         },
         created(){
-            console.log(this.$auth.user.username);
+
+            
+            console.log("username ", this.$auth.user.username);
             const fetchUsuario = async () => {
                 const response = await axios.get('http://localhost:3000/api/usuario', {                
                     headers: {
