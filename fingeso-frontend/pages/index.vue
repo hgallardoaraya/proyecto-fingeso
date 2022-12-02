@@ -50,25 +50,26 @@
 
 <script>
     import axios from 'axios';
+    import isAuthenticated from '../utils/isAuthenticated';
+    
     export default {
         data(){
             return{
                 nombre: "default"
             }
         },
-        created(){
-
-            
-            console.log("username ", this.$auth.user.username);
+        created(){            
+            if(!isAuthenticated()){
+                this.$router.push({ path: "/login" })
+            }
             const fetchUsuario = async () => {
                 const response = await axios.get('http://localhost:3000/api/usuario', {                
                     headers: {
-                        'username': this.$auth.user.username
+                        'username': JSON.parse(localStorage.getItem('user')).username
                     }
                 })
                 this.nombre = response.data.nombre;
             }
-
             fetchUsuario();
         }
     }

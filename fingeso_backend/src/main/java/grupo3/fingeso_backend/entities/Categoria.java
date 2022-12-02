@@ -36,6 +36,6 @@ public class Categoria {
 
     @JsonManagedReference(value="categoria_subcategoria")
     @OneToMany(mappedBy = "categoria")
-    private List<SubCategoria> subcategorias;
+    private List<SubCategoria> subItems;
 
 }

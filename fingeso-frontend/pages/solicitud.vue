@@ -52,9 +52,9 @@ import axios from 'axios';
 
 
     export default{
+        props: ['solicitud'],
         data(){
-            return{       
-                solicitud: this.$route.params.solicit,
+            return{                       
                 categorias: [],
                 show: false
             }
@@ -69,11 +69,8 @@ import axios from 'axios';
             getCategorias();
         },
         methods: {
-            async getSubCategorias(categoria){
-                console.log(categoria.subcategorias);
-                // this.$router.
-                this.$router.push({path: "/index" });
-                // this.$router.go();
+            async getSubCategorias(categoria){                
+                this.$router.push({path: "/index" });                
             }
         }
     }

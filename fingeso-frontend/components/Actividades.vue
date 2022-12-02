@@ -2,9 +2,11 @@
     <div>
         <h1>Actividades</h1>
         {{ solicitud }}
-        
-        <template>
-        <v-expansion-panels>
+        {{ items }}
+        <ExpansionPanel v-for="(item, i) in items" :key="i" v-bind:items="item" v-bind:subItems="item.subItems"/>
+        <!-- <template> -->
+<!--         
+        <ExpansionPanel>
             <v-expansion-panel
             v-for="(subcategoria, i) in subcategorias"
             :key="i"
@@ -24,33 +26,7 @@
                                 </v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <v-row justify="center">
-                                            <v-expansion-panels inset>
-                                            <v-expansion-panel
-                                                v-for="(actividad, k) in grupoActividades.actividades"
-                                                :key="k"
-                                            >
-                                                <v-expansion-panel-header>{{ actividad.text }}</v-expansion-panel-header>
-                                                <v-expansion-panel-content>
-                                                    <template>
-                                                        <div class="d-flex justify-end align-center">
-                                                            <v-file-input
-                                                                show-size
-                                                                counter
-                                                                multiple
-                                                                label="File input"
-                                                                v-model="fileInputs[k]"
-                                                                class="mr-8" 
-                                                            ></v-file-input>
-                                                            
-                                                            <v-btn @click="uploadFile(k, grupoActividades.actividades.id)" class="mx-16 blue white--text">
-                                                                    Subir
-                                                                </v-btn>
-                                                                
-                                                        </div>
-                                                        </template>
-                                                </v-expansion-panel-content>
-                                            </v-expansion-panel>
-                                            </v-expansion-panels>
+                                            <ExpansionPanel :items="grupoActividades.actividades" />
                                         </v-row>
                                     </v-expansion-panel-content>
                             </v-container>
@@ -82,22 +58,25 @@
                     </v-expansion-panels>
                 </v-expansion-panel-content>
             </v-expansion-panel>
-        </v-expansion-panels>
-</template>
+        </v-expansion-panels> -->
+<!-- </template> -->
 
     </div>
 </template>
 
 <script>
-    import axios from 'axios';
+    import ExpansionPanel from '../components/ExpansionPanel.vue'
     export default{
         name: 'Actividades',
-        props: ['subcategorias', 'solicitud'],    
+        props: ['items', 'solicitud'],   
         data(){
             return{
                 fileInputs: [],
                 fileDownload: new Set(),
-                index: 0
+                index: 0,
+                components: {
+                    ExpansionPanel
+                },
             }
         },
         methods: {
@@ -121,6 +100,9 @@
                     console.log(this.fileDownload);
                 })
             }
+        },
+        created(){
+            // console.log("subcategorias", this.subcategorias);
         }
     }
 </script>

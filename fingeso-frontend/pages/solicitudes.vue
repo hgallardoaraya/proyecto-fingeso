@@ -39,7 +39,7 @@
 
 <script>
     import axios from 'axios';
-    import parseJwt from '../utils/parseJwt';
+    import isAuthenticated from '../utils/isAuthenticated';
     import Solicitud from '../components/Solicitud.vue'
     
     export default {
@@ -78,42 +78,37 @@
                 }
             }
         },
-        created(){            
-            const fetchUsuario = async () => {
-                const token = this.$auth.strategy.token.get();
-                if(token){
-                    const credentials = parseJwt(token);
-                    console.log(credentials);
-                    const response = await axios.get('http://localhost:3000/api/usuario/solicitudes', {                
-                        headers: {
-                            'username': credentials.sub
-                        }
-                    })                    
-                    response.data.map((solicitud, i) => {
-                        const row = {
-                            numero: i,
-                            semestre: solicitud.periodo,
-                            estado: solicitud.estado,
-                            resultado: solicitud.resultado_final,
-                            accion: "Click",
-                            id: solicitud.id
-                        }
-                        this.solicitudes = response.data;
-                        this.items.push(row);
-                    })
-                }else{                    
-                    this.$router.push({ path: "./login" });
-                }                
+        created(){                
+            if(!isAuthenticated()){
+                this.$router.push({ path: "/login" })
+            }
+            
+            const fetchUsuario = async () => {                                            
+                const response = await axios.get('http://localhost:3000/api/usuario/solicitudes', {                
+                    headers: {
+                        'username': JSON.parse(localStorage.getItem('user')).username
+                    }
+                })                    
+                response.data.map((solicitud, i) => {
+                    const row = {
+                        numero: i,
+                        semestre: solicitud.periodo,
+                        estado: solicitud.estado,
+                        resultado: solicitud.resultado_final,
+                        accion: "Click",
+                        id: solicitud.id
+                    }
+                    this.solicitudes = response.data;
+                    this.items.push(row);
+                })
+                            
             }
             fetchUsuario();
         },
         methods: {
             getSolicitud(item){
-                this.solicitud = this.solicitudes[item.numero];
-                // this.$router.push({path: "/solicitud", params: { solicitud: this.solicitudes[item.numero] } });
-                console.log(this.$router)
-                this.show = "solicitud";
-                // this.editedItem = Object.assign({}, item)
+                this.solicitud = this.solicitudes[item.numero];                                
+                this.show = "solicitud";                
             }
         }
     }

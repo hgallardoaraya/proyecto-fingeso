@@ -45,7 +45,7 @@
                 </v-card>
             </v-container>
         </div>
-        <Actividades v-if="show === 'actividades'" v-bind:subcategorias="subcategorias" v-bind:solicitud="solicitud"/>
+        <Actividades v-if="show === 'actividades'" v-bind:items="subcategorias" v-bind:solicitud="solicitud"/>
     </div>
 </template>
 
@@ -70,16 +70,16 @@ import axios from 'axios';
             const getCategorias = async () => {
                 const response = await axios.get('http://localhost:3000/api/categorias');
                 this.categorias = response.data;
-                console.log(this.categorias);
+                console.log("categorias", this.categorias);
             }
 
             getCategorias();
         },
         methods: {
             async getSubCategorias(categoria){
-                this.subcategorias = categoria.subcategorias; 
-                this.show = 'actividades';
-                console.log(categoria.subcategorias)
+                this.subcategorias = categoria.subItems; 
+                console.log("categoria sub items", categoria.subItems);
+                this.show = 'actividades';                
             }
         }
     }

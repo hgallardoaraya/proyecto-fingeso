@@ -36,7 +36,7 @@ public class SubCategoria {
 
     @JsonManagedReference(value="subcategoria_grupoactividades")
     @OneToMany(mappedBy = "subCategoria")
-    private List<GrupoActividades> grupoActividades;
+    private List<GrupoActividades> subItems;
 
 
 }

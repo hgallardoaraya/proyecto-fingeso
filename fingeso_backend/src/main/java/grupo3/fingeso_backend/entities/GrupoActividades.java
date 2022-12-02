@@ -36,7 +36,7 @@ public class GrupoActividades {
 
     @JsonManagedReference(value = "grupoactividades_actividad")
     @OneToMany(mappedBy = "grupoActividades")
-    private List<Actividad> actividades;
+    private List<Actividad> subItems;
 
 
 }
