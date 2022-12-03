@@ -2,6 +2,7 @@ package grupo3.fingeso_backend.controllers;
 
 import grupo3.fingeso_backend.entities.Respaldo;
 import grupo3.fingeso_backend.entities.Solicitud;
+import grupo3.fingeso_backend.services.DocumentoService;
 import grupo3.fingeso_backend.services.RespaldoService;
 import grupo3.fingeso_backend.services.SolicitudService;
 import grupo3.fingeso_backend.util.FileDownloadUtil;
@@ -24,28 +25,24 @@ import java.util.Optional;
 public class DocumentoController {
 
     @Autowired
+    DocumentoService documentoService;
+
+    @Autowired
     SolicitudService solicitudService;
     @Autowired
     RespaldoService respaldoService;
 
     @PostMapping("/uploadFile")
     public ResponseEntity<FileUploadResponse> uploadFile(
-            @RequestParam("file") MultipartFile multipartFile
-//            @RequestParam("id") Integer id
-    )
-        throws IOException{
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        long size = multipartFile.getSize();
-        String fileCode = FileUploadUtil.saveFile(fileName, multipartFile);
-
-//        System.out.println(id);
-//        respaldoService.updateFileRespaldoById(id, fileName);
-
-        FileUploadResponse response = new FileUploadResponse();
-        response.setFileName(fileName);
-        response.setSize(size);
-        response.setDownloadUri("/downloadFile/" + fileCode);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+            @RequestParam("file") MultipartFile multipartFile,
+            @RequestParam("id") Integer id,
+            @RequestParam("tipo_respaldo") String tipo_respaldo,
+            @RequestParam("id_actividad") Integer id_actividad,
+            @RequestParam("puntaje") Integer puntaje,
+            @RequestParam("valido") Boolean valido,
+            @RequestParam("id_solicitud") Integer id_solicitud
+    ) throws IOException {
+        return documentoService.uploadFile(multipartFile, id, tipo_respaldo, id_actividad, puntaje, valido, id_solicitud);
     }
 
     @GetMapping("/downloadFile/{fileCode}")
