@@ -38,6 +38,7 @@ public class SubCategoria {
     @OneToMany(mappedBy = "subCategoria")
     private List<GrupoActividades> subItems;
 
-
+    @Transient
+    private String tipo = "subCategoria";
 }
 

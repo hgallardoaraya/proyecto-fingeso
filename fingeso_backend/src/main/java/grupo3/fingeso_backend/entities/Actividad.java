@@ -34,9 +34,7 @@ public class Actividad {
     @JsonBackReference(value = "grupoactividades_actividad")
     private GrupoActividades grupoActividades;
 
-    @JsonManagedReference(value="respaldo-actividad")
-    @OneToMany(mappedBy = "actividad")
-    private List<Respaldo> respaldos;
-
+    @Transient
+    private String tipo = "actividad";
 }
 

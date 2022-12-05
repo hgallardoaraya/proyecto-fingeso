@@ -54,7 +54,7 @@ public class Usuario {
     private Date ultima_jerarquia;
 
     @JsonManagedReference(value="solicitud_usuario")
-    @OneToMany(mappedBy = "id_usuario")
+    @OneToMany(mappedBy = "usuario")
     private List<Solicitud> solicitudes;
 
     @JsonManagedReference(value = "comite_usuario")

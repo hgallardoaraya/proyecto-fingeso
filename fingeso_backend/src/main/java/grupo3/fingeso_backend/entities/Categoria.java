@@ -25,9 +25,6 @@ public class Categoria {
     @Column(name = "puntaje_maximo")
     private Integer puntaje_maximo;
 
-    @Column(name = "tipo")
-    private String tipo;
-
     @Column(name = "input")
     private Boolean input;
 
@@ -38,4 +35,6 @@ public class Categoria {
     @OneToMany(mappedBy = "categoria")
     private List<SubCategoria> subItems;
 
+    @Transient
+    private String tipo = "categoria";
 }

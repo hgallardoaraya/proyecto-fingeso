@@ -38,6 +38,7 @@ public class GrupoActividades {
     @OneToMany(mappedBy = "grupoActividades")
     private List<Actividad> subItems;
 
-
+    @Transient
+    private String tipo = "grupoActividades";
 }
 

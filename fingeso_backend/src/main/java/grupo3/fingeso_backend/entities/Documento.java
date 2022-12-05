@@ -21,14 +21,13 @@ public class Documento {
     private Integer id;
 
     @Column(name = "archivo")
-    private byte[] archivo;
+    private String archivo;
 
     @Column(name = "tipo_respaldo")
     private String tipoRespaldo;
 
     @ManyToOne
     @JoinColumn(name = "id_subcategoria")
-    @JsonBackReference(value = "subcategoria_grupoactividades")
     private SubCategoria subCategoria;
 
     @ManyToOne
@@ -41,6 +40,7 @@ public class Documento {
 
     @ManyToOne
     @JoinColumn(name = "id_solicitud")
+    @JsonBackReference(value = "solicitud_documentos")
     private Solicitud solicitud;
 
     @Column(name = "puntaje")

@@ -50,20 +50,20 @@
 </template>
 
 <script>
-import axios from 'axios';
+    import axios from 'axios';
     import Actividades from '../components/Actividades.vue'
 
     export default{
         name: 'Solicitud',
         props: ['solicitud'],
-        components: {
-            Actividades
-        },
         data(){
             return{
                 categorias: [],
                 subcategorias: [],
-                show: 'solicitud'
+                show: 'solicitud',
+                components: {
+                    Actividades
+                },
             }
         },
         created(){

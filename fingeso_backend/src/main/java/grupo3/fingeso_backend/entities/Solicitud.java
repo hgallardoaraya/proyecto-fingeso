@@ -30,7 +30,7 @@ public class Solicitud {
     @ManyToOne
     @JoinColumn(name = "id_usuario")
     @JsonBackReference(value = "solicitud_usuario")
-    private Usuario id_usuario;
+    private Usuario usuario;
 
     @Column(name = "estado")
     private String estado;
@@ -55,8 +55,8 @@ public class Solicitud {
     @JsonBackReference(value="solicitud_comite")
     private Comite comite;
 
-    @JsonManagedReference(value="respaldo-solicitud")
+    @JsonManagedReference(value = "solicitud_documentos")
     @OneToMany(mappedBy = "solicitud")
-    private List<Respaldo> respaldos;
+    private List<Documento> documentos;
 
 }
