@@ -13,7 +13,7 @@
                             v-model="file"
                             class="mr-8" 
                         ></v-file-input>
-                        
+                        <a class="blue--text " v-if="documentoSubido" :href="documentoSubido?.downloadUri">{{ documentoSubido?.fileName }}</a>
                         <v-btn 
                             class="mx-16 blue white--text" 
                             @click="uploadFile(items)"
@@ -29,7 +29,6 @@
 </template>
 
 <script>
-    import Solicitudes from '../pages/solicitudes.vue';
 import ExpansionPanel from './ExpansionPanel.vue'
 
     export default {
@@ -40,7 +39,8 @@ import ExpansionPanel from './ExpansionPanel.vue'
                 file: null,
                 components: {
                     ExpansionPanel
-                }
+                },
+                documentoSubido: {}
             }
         },
         methods: {
@@ -49,7 +49,9 @@ import ExpansionPanel from './ExpansionPanel.vue'
 
                 console.log("Archivo", this.file);
                 console.log("Items", items);
-                console.log("Solicitud", this.solicitud);                            
+                console.log("Solicitud", this.solicitud);    
+                
+                
                 const documentos = this.solicitud.documentos.filter(doc => doc.tipoRespaldo === items.tipo);                                
                 let documento = null;
                 documentos.forEach(doc => {
@@ -70,9 +72,14 @@ import ExpansionPanel from './ExpansionPanel.vue'
                 const headers = {
                     'Content-Type': 'multipart/form-data',                        
                 };                                   
-                
-                const response = await this.$axios.post("/uploadFile", formData, { headers });
-                console.log(response);
+                try{
+                    const response = await this.$axios.post("/uploadFile", formData, { headers });
+                    console.log(response);
+                    this.documentoSubido = response.data;
+                    alert("Archivo subido con exito");
+                }catch{
+                    alert("Error al subir el archivo")
+                }
             }
         },
         created(){

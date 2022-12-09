@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Service
@@ -67,6 +68,7 @@ public class DocumentoService {
                 response.setFileName(fileName);
                 response.setSize(size);
                 response.setDownloadUri("/downloadFile/" + uploadPathName + "/" + fileName);
+                response.setId(documento.getId());
                 return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

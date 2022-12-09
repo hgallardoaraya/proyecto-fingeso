@@ -1,0 +1,39 @@
+Usuarios: Pasajero Estudiante, Pasajero Adulto mayor, Pasajero Normal
+
+1. El sistema debe permitir al usuario obtener una tarjeta normal (BIP), de estudiante (TNE)  o de adulto mayor si este cumple
+con los requisitos establecidos. -> Requisito funcional / de usuario
+2. El sistema debe permitir el pago del pasaje con tarjeta BIP, TNE o de adulto mayor.
+3. El sistema debe permitir al usuario crear una cuenta en la aplicación móvil con su clave única. -> Requisito funcional
+de usuario
+4. El sistema debe permitir el pago con código QR generado en la aplicación móvil del usuario. -> Requisito funcional
+de sistema
+5. El pago con código QR permite únicamente la tarifa de un pasajero normal -> Requisito no funcional
+6. El totem con lector de código QR para permitir el pago de los usuarios debe estar disponible tanto en metros como
+buses.
+7. Los totem para pagar con tarjeta deben estar disponibles tanto en metros como buses.
+8. Los totem deben estar conectados con un torniquete que permita el paso solo si el usuario ha pagado. -> Requisito
+no funcional
+9. El sistema permite diversos medios de pago para cargar las tarjetas. -> Requerimiento funcional / de usuario
+10. El sistema, para realizar cualquier carga de saldo, permite pagar por medio de la aplicación móvil, 
+página web o en boletería (presencial). -> Requerimiento funcional / de sistema
+11. El sistema debe disponer de distintos precios dependiendo del tipo de usuario. -> Requerimiento funcional
+/ de usuario
+12. El sistema debe disponer de distintos precios dependiendo del horario para el pasajero normal. -> Funcional / de usuario
+13. El pasaje de estudiantes y adultos mayores debe ser estático y no aumentar de acuerdo al horario. -> No funcional
+14. La tarifa de estudiante y de adulto mayor es de 230 CLP y la del pasajero normal es de 700, 720 u 800 CLP 
+dependiendo del horario. -> Requisito funcional / de sistema
+15. Cuando el saldo de la tarjeta cambia, ya sea porque se ha pagado o se realizó una carga, el sistema debe
+informar de dicho cambio con el saldo actual y la diferencia (ya sea positiva o negativa). -> Requisito funcional
+/ de sistema
+16. El sistema debe permitir que las tarjetas contengan un saldo de emergencia equivalente a un pasaje en caso de que
+el usuario no tenga saldo suficiente. -> Requisito no funcional
+17. El usuario debe poder tener saldo negativo si es que el saldo de emergencia es mayor al saldo disponible. ->
+Requisito no funcional
+18. Cada tarjeta debe tener un identificador único.
+19. El usuario debe poder deshabilitar o dar de baja tanto sus tarjetas como su cuenta en la aplicación.
+20. El sistema debe permitir combinaciones de 3 viajes al costo de 1 (transbordo) cumpliendo ciertas condiciones.
+-> hay que especificar las condiciones en un requisito funcional de sistema pero en sí es un requisito válido de usuario
+21. El sistema debe detectar el bus o metro al que hace ingreso el usuario. -> Requisito funcional
+22. El usuario no puede hacer transbordo en la misma bus/metro (se complementa con la 21) -> Requisito no funcional
+23. El sistema debe garantizar accesibilidad para personas con visibilidad reducida en todos sus ámbitos (app, presencial, web, etc). -> Requisito no funciona
+
