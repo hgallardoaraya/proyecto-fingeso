@@ -1,4 +1,4 @@
-package grupo3.fingeso_backend.controllers;
+package grupo3.fingeso_backend.util;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

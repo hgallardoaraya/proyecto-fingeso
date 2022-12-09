@@ -33,13 +33,6 @@ public class UsuarioController {
 
     @GetMapping("/usuario/solicitudes")
     public ResponseEntity<List<Solicitud>> getSolicitudesUsuario(@RequestHeader String username){
-        System.out.println(username);
-        List<Solicitud> solicitudes = usuarioService.getUsuarioByUsername(username).getSolicitudes();
-        return ResponseEntity.ok().body(solicitudes);
+            return ResponseEntity.ok().body(usuarioService.getSolicitudesUsuario(username));
     }
-
-
-
-
-
 }

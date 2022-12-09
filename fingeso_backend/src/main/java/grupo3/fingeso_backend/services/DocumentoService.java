@@ -1,6 +1,6 @@
 package grupo3.fingeso_backend.services;
 
-import grupo3.fingeso_backend.controllers.FileUploadResponse;
+import grupo3.fingeso_backend.util.FileUploadResponse;
 import grupo3.fingeso_backend.entities.*;
 import grupo3.fingeso_backend.repositories.*;
 import grupo3.fingeso_backend.util.FileUploadUtil;

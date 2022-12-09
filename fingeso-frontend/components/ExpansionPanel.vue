@@ -31,7 +31,8 @@
 <script>
     import Solicitudes from '../pages/solicitudes.vue';
 import ExpansionPanel from './ExpansionPanel.vue'
-    export default{
+
+    export default {
         name: 'ExpansionPanel',
         props: ['items', 'subItems', 'solicitud'],
         data(){
@@ -56,7 +57,8 @@ import ExpansionPanel from './ExpansionPanel.vue'
                         documento = doc;
                         return;
                     }
-                })                
+                })   
+                            
                 console.log(documento);                
 
                 const formData = new FormData();

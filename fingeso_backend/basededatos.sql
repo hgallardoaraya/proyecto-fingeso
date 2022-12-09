@@ -65,7 +65,6 @@ ALTER TABLE public.actividades OWNER TO postgres;
 CREATE TABLE public.categorias (
     text character varying,
     puntaje_maximo integer,
-    tipo character varying,
     input boolean,
     id integer NOT NULL,
     img character varying
@@ -101,6 +100,39 @@ ALTER TABLE public.comites ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
+-- Name: documentos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.documentos (
+    id integer NOT NULL,
+    archivo character varying,
+    tipo_respaldo character varying,
+    id_subcategoria integer,
+    id_grupoactividades integer,
+    id_actividad integer,
+    id_solicitud integer,
+    puntaje integer,
+    valido boolean
+);
+
+
+ALTER TABLE public.documentos OWNER TO postgres;
+
+--
+-- Name: documentos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.documentos ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.documentos_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
 -- Name: grupos_actividades; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -116,36 +148,6 @@ CREATE TABLE public.grupos_actividades (
 ALTER TABLE public.grupos_actividades OWNER TO postgres;
 
 --
--- Name: image_data; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.image_data (
-    id integer NOT NULL,
-    name character varying,
-    type character varying,
-    imagedata bytea
-);
-
-
-ALTER TABLE public.image_data OWNER TO postgres;
-
---
--- Name: respaldos_solicitudes; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.respaldos_solicitudes (
-    id integer NOT NULL,
-    puntaje integer,
-    archivo character varying,
-    id_actividad integer,
-    valido boolean,
-    id_solicitud integer
-);
-
-
-ALTER TABLE public.respaldos_solicitudes OWNER TO postgres;
-
---
 -- Name: solicitudes; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -154,7 +156,6 @@ CREATE TABLE public.solicitudes (
     fecha_envio date,
     id integer NOT NULL,
     puntuacion integer,
-    archivo character varying,
     estado character varying,
     resultado_puntuacion character varying,
     resultado_apelacion character varying,
@@ -262,9 +263,9 @@ COPY public.actividades (id, text, input, id_grupo_actividades, puntaje_maximo) 
 -- Data for Name: categorias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.categorias (text, puntaje_maximo, tipo, input, id, img) FROM stdin;
-Obra Realizada	600	categoria	f	2	obra.svg
-Formación	400	categoria	f	1	formacion.svg
+COPY public.categorias (text, puntaje_maximo, input, id, img) FROM stdin;
+Obra Realizada	600	f	2	obra.svg
+Formación	400	f	1	formacion.svg
 \.
 
 
@@ -278,6 +279,18 @@ COPY public.comites (id, name) FROM stdin;
 3	Comité de Apelación de la Facultad
 4	Comité de Evaluación de la Facultad
 5	end
+\.
+
+
+--
+-- Data for Name: documentos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.documentos (id, archivo, tipo_respaldo, id_subcategoria, id_grupoactividades, id_actividad, id_solicitud, puntaje, valido) FROM stdin;
+14	felipe@gmail.com/grupoActividades/9/tareafingeso.txt	grupoActividades	\N	9	\N	9	0	f
+15	hector@gmail.com/actividad/7/prosa.txt	actividad	\N	\N	7	8	0	f
+16	hector@gmail.com/actividad/8/mvcjava.png	actividad	\N	\N	8	8	0	f
+17	hector@gmail.com/actividad/13/9 Nivele Aplicacion Formacion Ingenieros.pdf	actividad	\N	\N	13	8	0	f
 \.
 
 
@@ -307,31 +320,13 @@ Colaborador de programas o proyectos de extensión de la universidad	11	t	250	6
 
 
 --
--- Data for Name: image_data; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.image_data (id, name, type, imagedata) FROM stdin;
-\.
-
-
---
--- Data for Name: respaldos_solicitudes; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.respaldos_solicitudes (id, puntaje, archivo, id_actividad, valido, id_solicitud) FROM stdin;
-1	12	C:/Users/Héctor/appjerarquizacionusach/fingeso_backend/Files-Upload/yzJSiKkx-HectorGallardo_Tarea5.docx	1	t	4
-2	8	C:/Users/Héctor/appjerarquizacionusach/fingeso_backend/Files-Upload/NKzUHf9d-HectorGallardo_Tarea5.docx	4	t	4
-\.
-
-
---
 -- Data for Name: solicitudes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.solicitudes (id_usuario, fecha_envio, id, puntuacion, archivo, estado, resultado_puntuacion, resultado_apelacion, resultado_evaluacion, resultado_final, id_comite, periodo) FROM stdin;
-5	2022-11-28	8	500	\N	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2021-03-24
-5	2022-11-28	4	500	\N	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2022-11-23
-5	2022-11-28	6	1000	\N	Habilitado	\N	\N	\N	Pendiente	1	2020-07-08
+COPY public.solicitudes (id_usuario, fecha_envio, id, puntuacion, estado, resultado_puntuacion, resultado_apelacion, resultado_evaluacion, resultado_final, id_comite, periodo) FROM stdin;
+5	2022-11-28	8	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2021-03-24
+5	2022-11-28	4	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2022-11-23
+7	2022-11-28	9	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2021-03-24
 \.
 
 
@@ -355,6 +350,7 @@ Extensión y Asistencia Técnica	250	f	2	6
 
 COPY public.usuarios (nombre, username, rut, departamento, facultad, desempenio, cargo, jerarquia, antiguedad, ultima_jerarquia, id, password, id_comite) FROM stdin;
 Hector Gallardo	hector@gmail.com	20.285.942-9	DIINF	Ingenieria	3	Planta	Ayudante	2022-11-28	2022-11-28	5	$2a$10$.iYx7f6AmEjit2/ds4P5yu35AsHhwZVCryyGeijDbI3ggzQd02RHW	2
+Felipe Aravena	felipe@gmail.com	20.285.942-9	DIINF	Ingenieria	3	Planta	Ayudante	2022-11-28	2022-11-28	7	$2a$10$.iYx7f6AmEjit2/ds4P5yu35AsHhwZVCryyGeijDbI3ggzQd02RHW	2
 \.
 
 
@@ -363,6 +359,13 @@ Hector Gallardo	hector@gmail.com	20.285.942-9	DIINF	Ingenieria	3	Planta	Ayudante
 --
 
 SELECT pg_catalog.setval('public.comites_id_seq', 5, true);
+
+
+--
+-- Name: documentos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.documentos_id_seq', 17, true);
 
 
 --
@@ -390,27 +393,19 @@ ALTER TABLE ONLY public.comites
 
 
 --
+-- Name: documentos documentos_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.documentos
+    ADD CONSTRAINT documentos_pk PRIMARY KEY (id);
+
+
+--
 -- Name: grupos_actividades grupos_actividades_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.grupos_actividades
     ADD CONSTRAINT grupos_actividades_pk PRIMARY KEY (id);
-
-
---
--- Name: image_data image_data_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.image_data
-    ADD CONSTRAINT image_data_pk PRIMARY KEY (id);
-
-
---
--- Name: respaldos_solicitudes respaldos_solicitudes_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.respaldos_solicitudes
-    ADD CONSTRAINT respaldos_solicitudes_pk PRIMARY KEY (id);
 
 
 --
@@ -438,10 +433,10 @@ ALTER TABLE ONLY public.usuarios
 
 
 --
--- Name: respaldos_solicitudes id_actividad_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: documentos id_actividad_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.respaldos_solicitudes
+ALTER TABLE ONLY public.documentos
     ADD CONSTRAINT id_actividad_fk FOREIGN KEY (id_actividad) REFERENCES public.actividades(id);
 
 
@@ -462,10 +457,18 @@ ALTER TABLE ONLY public.actividades
 
 
 --
--- Name: respaldos_solicitudes id_solicitud_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: documentos id_grupoactividades_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.respaldos_solicitudes
+ALTER TABLE ONLY public.documentos
+    ADD CONSTRAINT id_grupoactividades_fk FOREIGN KEY (id_grupoactividades) REFERENCES public.grupos_actividades(id);
+
+
+--
+-- Name: documentos id_solicitud_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.documentos
     ADD CONSTRAINT id_solicitud_fk FOREIGN KEY (id_solicitud) REFERENCES public.solicitudes(id);
 
 
@@ -474,6 +477,14 @@ ALTER TABLE ONLY public.respaldos_solicitudes
 --
 
 ALTER TABLE ONLY public.grupos_actividades
+    ADD CONSTRAINT id_subcategoria_fk FOREIGN KEY (id_subcategoria) REFERENCES public.subcategorias(id);
+
+
+--
+-- Name: documentos id_subcategoria_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.documentos
     ADD CONSTRAINT id_subcategoria_fk FOREIGN KEY (id_subcategoria) REFERENCES public.subcategorias(id);
 
 

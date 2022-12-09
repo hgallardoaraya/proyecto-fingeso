@@ -1,4 +1,5 @@
 package grupo3.fingeso_backend.services;
+import grupo3.fingeso_backend.entities.Solicitud;
 import grupo3.fingeso_backend.entities.Usuario;
 import grupo3.fingeso_backend.repositories.ComiteRepository;
 import grupo3.fingeso_backend.repositories.UsuarioRepository;
@@ -24,7 +25,6 @@ import java.util.Optional;
 public class UsuarioService implements UserDetailsService {
 
     private final UsuarioRepository usuarioRepository;
-    private final ComiteRepository comiteRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -52,6 +52,10 @@ public class UsuarioService implements UserDetailsService {
 
     public Usuario getUsuarioByUsername(String username) {
         return usuarioRepository.findByUsername(username);
+    }
+
+    public List<Solicitud> getSolicitudesUsuario(String username){
+        return getUsuarioByUsername(username).getSolicitudes();
     }
 }
 

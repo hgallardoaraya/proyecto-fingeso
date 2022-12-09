@@ -3,6 +3,7 @@ package grupo3.fingeso_backend.controllers;
 import grupo3.fingeso_backend.services.DocumentoService;
 import grupo3.fingeso_backend.services.SolicitudService;
 import grupo3.fingeso_backend.util.FileDownloadUtil;
+import grupo3.fingeso_backend.util.FileUploadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;

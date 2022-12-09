@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Actividades</h1>
-        {{ solicitud }}
+        <!-- {{ solicitud }} -->
         <!-- {{ items }} -->
         <ExpansionPanel v-for="(item, i) in items" :key="i" v-bind:items="item" v-bind:subItems="item.subItems" v-bind:solicitud="solicitud"/>
     </div>
