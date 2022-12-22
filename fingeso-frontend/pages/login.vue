@@ -26,6 +26,7 @@
     import isAuthenticated from '../utils/isAuthenticated'
 
     export default {
+        layout: 'empty',
         data(){
             return{
                 dialog: false,

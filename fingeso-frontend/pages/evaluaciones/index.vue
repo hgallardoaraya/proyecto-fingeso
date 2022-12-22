@@ -4,7 +4,7 @@
 
         <div class="d-flex justify-start flex-column" v-if="show === 'solicitudes'">
             <h2 class="my-8 accent--text">
-                Mis Solicitudes
+                Mis Evaluaciones - <span class="blue--text">{{ this.user.comite[0] }}</span>
             </h2>
             <v-data-table
             style="width: 80%;"
@@ -39,8 +39,8 @@
 
 <script>
     import axios from 'axios';
-    import isAuthenticated from '../utils/isAuthenticated';
-    import Solicitud from '../components/Solicitud.vue'
+    import isAuthenticated from '../../utils/isAuthenticated';
+    import Solicitud from '../../components/Solicitud.vue'
     
     export default {
         data(){
@@ -53,11 +53,7 @@
                     {
                         text: 'Semestre',
                         value: 'semestre'
-                    },
-                    {
-                        text: 'Estado',
-                        value: 'estado'
-                    },
+                    },                    
                     {
                         text: 'Resultado',
                         value: 'resultado'
@@ -75,16 +71,19 @@
                 show: "solicitudes",
                 components: {
                     Solicitud
-                }
+                },
+                user: {}
             }
         },
         created(){                
             if(!isAuthenticated()){
                 this.$router.push({ path: "/login" })
             }
+
+            this.user = JSON.parse(localStorage.getItem('user'));
             
             const fetchUsuario = async () => {                                            
-                const response = await axios.get('http://localhost:3000/api/usuario/solicitudes', {                
+                const response = await axios.get('http://localhost:3000/api/usuario/evaluaciones', {                
                     headers: {
                         'username': JSON.parse(localStorage.getItem('user')).username
                     }
@@ -92,24 +91,25 @@
                 response.data.map((solicitud, i) => {
                     const row = {
                         numero: i,
-                        semestre: solicitud.periodo,
-                        estado: solicitud.estado,
+                        semestre: solicitud.periodo,                        
                         resultado: solicitud.resultado_final,
                         accion: "Click",
                         id: solicitud.id
                     }
                     this.solicitudes = response.data;
-                    console.log(this.solicitudes);
                     this.items.push(row);
                 })
+
+                console.log(this.solicitudes);
                             
             }
             fetchUsuario();
         },
         methods: {
             getSolicitud(item){
-                this.solicitud = this.solicitudes[item.numero];                                
-                this.show = "solicitud";                
+                this.solicitud = this.solicitudes[item.numero];                                                
+                this.$router.push({ path: "/evaluaciones/evaluacion", query: this.solicitud})
+                // this.show = "solicitud";                
             }
         }
     }

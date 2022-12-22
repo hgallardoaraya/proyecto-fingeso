@@ -1,8 +1,7 @@
 <template>
   <v-form v-model="valid">
     <v-text-field v-model="userInfo.name" 
-                  label="Name" 
-                  
+                  label="Name"                   
                   v-if="name" />
 
     <v-text-field v-model="userInfo.username" 

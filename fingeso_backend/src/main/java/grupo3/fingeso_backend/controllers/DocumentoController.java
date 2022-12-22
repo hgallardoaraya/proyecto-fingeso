@@ -36,34 +36,27 @@ public class DocumentoController {
         return documentoService.uploadFile(multipartFile, id_documento, tipo_respaldo, id_tipo, id_solicitud);
     }
 
-    @GetMapping("/downloadFile/{fileCode}")
-    public ResponseEntity<?> downloadFile(@PathVariable("fileCode") String fileCode) throws IOException {
-        FileDownloadUtil downloadUtil = new FileDownloadUtil();
+    @GetMapping("/downloadFile/{username}/{tipo}/{idTipo}/{fileName}")
+    public ResponseEntity<?> downloadFile(@PathVariable("username") String username,
+                                          @PathVariable("tipo") String tipo,
+                                          @PathVariable("idTipo") String idTipo,
+                                          @PathVariable("fileName") String fileName) throws IOException {
 
-        UrlResource resource = null;
-
-        try{
-            resource = downloadUtil.getFileAsResource(fileCode);
-        }catch(IOException e){
-            return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
-        }
-
-        if(resource == null){
-            return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
-        }
-
-        String contentType = "application/octet-stream";
-        String headerValue = "attachment; filename=\"" + resource + "\"";
-        String filExtension = resource.getFilename().substring(resource.getFilename().lastIndexOf('.'));
-        System.out.println(resource.getFilename().substring(resource.getFilename().lastIndexOf('.')));
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, headerValue);
-        headers.add("FileExtension", filExtension);
-
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType(contentType))
-                .headers(headers)
-                .body(resource);
+        return documentoService.downloadFile(username, tipo, idTipo, fileName);
     }
 
+    @GetMapping("/documento/{tipo}/{idTipo}")
+    public ResponseEntity<FileUploadResponse> getDocumentoByTipo(@PathVariable("tipo") String tipo,
+                                                                 @PathVariable("idTipo") Integer idTipo){
+        return documentoService.getDocumentoByTipo(tipo, idTipo);
+    }
+
+    @PostMapping("/documento/addPuntaje")
+    public ResponseEntity<?> addPuntaje(
+            @RequestParam("id_documento") Integer id_documento,
+            @RequestParam("puntaje") Integer puntaje,
+            @RequestParam("valido") Boolean valido
+    ) throws IOException {
+        return documentoService.addPuntaje(id_documento, puntaje, valido);
+    }
 }

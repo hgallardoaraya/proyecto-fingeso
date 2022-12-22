@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app v-if="auth()">
       <v-app-bar      
         elevation="2"
         rounded
@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import isAuthenticated from '../utils/isAuthenticated';
 export default {
   name: 'DefaultLayout',
   data () {
@@ -58,6 +58,18 @@ export default {
           to: '/perfil'
         },             
       ],
+    }
+  },
+  methods: {
+    auth: function(){
+      if(!isAuthenticated()){
+        console.log("not logged");
+        this.$router.push({ path: "/login" })
+        return false;
+      }
+
+      console.log("logged");
+      return true;
     }
   }
 }

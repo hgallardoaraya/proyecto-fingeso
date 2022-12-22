@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="show === 'solicitud'">
-            <h2 class="my-8 accent--text">Solicitud Periodo {{ solicitud.periodo }}</h2>            
+            <h2 class="my-8 accent--text">Evaluación Periodo {{ solicitud.periodo }}</h2>            
             <v-container class="d-flex">
                 <v-card
                     elevation="2"
@@ -12,7 +12,7 @@
                 >       
                     <div class="d-flex justify-center">
                         <v-img
-                        v-bind:src="require('../assets/img/' + categoria.img)"
+                        v-bind:src="require('~/assets/img/' + categoria.img)"
                         style="width: 100%; height: 230px;"
                         >
                         </v-img>                  
@@ -44,6 +44,15 @@
                     </v-card-actions>
                 </v-card>
             </v-container>
+            
+            <v-btn 
+                v-if="type==='evaluacion'"
+                color="primary"
+                class="mt-8"
+                @click="sendPuntuacion()"
+            >
+                Finalizar Evaluacion
+            </v-btn>
         </div>
         <Actividades v-if="show === 'actividades'" v-bind:items="subcategorias" v-bind:solicitud="solicitud" v-bind:type="type"/>
     </div>
@@ -51,23 +60,29 @@
 
 <script>
     import axios from 'axios';
-    import Actividades from '../components/Actividades.vue'
+    import Actividades from '~/components/Actividades.vue'
+    import isAuthenticated from '~/utils/isAuthenticated';
 
     export default{
-        name: 'Solicitud',
-        props: ['solicitud'],
         data(){
             return{
                 categorias: [],
                 subcategorias: [],
                 show: 'solicitud',
-                type: 'solicitud',
+                type: 'evaluacion',
                 components: {
                     Actividades
                 },
+                solicitud: {}
             }
         },
         created(){
+            if(!isAuthenticated()){
+                this.$router.push({ path: "/login" })
+            }
+
+            this.solicitud = this.$route.query;
+
             const getCategorias = async () => {
                 const response = await axios.get('http://localhost:3000/api/categorias');
                 this.categorias = response.data;
@@ -81,6 +96,13 @@
                 this.subcategorias = categoria.subItems; 
                 console.log("categoria sub items", categoria.subItems);
                 this.show = 'actividades';                
+            },
+            async sendPuntuacion(){
+                const params = new URLSearchParams();
+                params.append('id_solicitud', this.solicitud.id);
+                const response = await this.$axios.post("/evaluacion/finalizarPuntuacion", params);                    
+                alert("Evaluación realizada con éxito!");
+                console.log(response);
             }
         }
     }

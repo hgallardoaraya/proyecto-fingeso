@@ -57,5 +57,9 @@ public class UsuarioService implements UserDetailsService {
     public List<Solicitud> getSolicitudesUsuario(String username){
         return getUsuarioByUsername(username).getSolicitudes();
     }
+
+    public List<Solicitud> getEvaluacionesUsuario(String username) {
+        return getUsuarioByUsername(username).getComite().getSolicitudes();
+    }
 }
 

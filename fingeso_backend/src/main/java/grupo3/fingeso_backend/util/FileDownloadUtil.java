@@ -12,14 +12,9 @@ public class FileDownloadUtil {
     private Path foundFile;
 
     public UrlResource getFileAsResource(String fileCode) throws IOException{
-        Path dirPath = Paths.get("Files-Upload");
+        foundFile = Paths.get("Files-Upload/" + fileCode);
 
-        Files.list(dirPath).forEach(file -> {
-            if(file.getFileName().toString().startsWith(fileCode)){
-                foundFile = file;
-                return;
-            }
-        });
+        System.out.println("filename " + foundFile.getFileName());
 
         if(foundFile != null){
             return new UrlResource(foundFile.toUri());

@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 public class FileUploadResponse {
     private String fileName;
     private String downloadUri;
-    private long size;
     private Integer id;
 }

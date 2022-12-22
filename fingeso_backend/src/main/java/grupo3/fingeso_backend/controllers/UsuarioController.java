@@ -35,4 +35,9 @@ public class UsuarioController {
     public ResponseEntity<List<Solicitud>> getSolicitudesUsuario(@RequestHeader String username){
             return ResponseEntity.ok().body(usuarioService.getSolicitudesUsuario(username));
     }
+
+    @GetMapping("/usuario/evaluaciones")
+    public ResponseEntity<List<Solicitud>> getEvaluacionesUsuario(@RequestHeader String username){
+        return ResponseEntity.ok().body(usuarioService.getEvaluacionesUsuario(username));
+    }
 }
