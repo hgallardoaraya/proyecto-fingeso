@@ -213,7 +213,6 @@ ALTER TABLE public.usuarios OWNER TO postgres;
 COPY public.actividades (id, text, input, id_grupo_actividades, puntaje_maximo) FROM stdin;
 4	Simposios y/o congresos sin publicación de acta	t	1	2
 1	Publicaciones en revistas de nivel A	t	1	12
-2	Publicaicones en revistas de nivel B	t	1	4
 3	Simposios y/o congresos con publicación de acta	t	1	4
 5	Charla invitada a congreso nacional, si es que no ha sido considerada en los items anteriores	t	1	4
 6	Charla invitada a congreso nacional, si es que no ha sido considerada en los ítemes anteriores. 	t	1	3
@@ -256,6 +255,7 @@ COPY public.actividades (id, text, input, id_grupo_actividades, puntaje_maximo) 
 43	Nivel Nacional	t	16	250
 44	A nivel universitario	t	17	250
 45	A nivel no universitario	t	17	250
+2	Publicaciones en revistas de nivel B	t	1	4
 \.
 
 
@@ -274,11 +274,11 @@ Formación	400	f	1	formacion.svg
 --
 
 COPY public.comites (id, name) FROM stdin;
-1	default
 2	Comité de Puntuación del Departamento
 3	Comité de Apelación de la Facultad
 4	Comité de Evaluación de la Facultad
-5	end
+5	Finalizada
+1	Habilitada
 \.
 
 
@@ -287,10 +287,26 @@ COPY public.comites (id, name) FROM stdin;
 --
 
 COPY public.documentos (id, archivo, tipo_respaldo, id_subcategoria, id_grupoactividades, id_actividad, id_solicitud, puntaje, valido) FROM stdin;
-14	felipe@gmail.com/grupoActividades/9/tareafingeso.txt	grupoActividades	\N	9	\N	9	0	f
 15	hector@gmail.com/actividad/7/prosa.txt	actividad	\N	\N	7	8	0	f
-16	hector@gmail.com/actividad/8/mvcjava.png	actividad	\N	\N	8	8	0	f
-17	hector@gmail.com/actividad/13/9 Nivele Aplicacion Formacion Ingenieros.pdf	actividad	\N	\N	13	8	0	f
+18	hector@gmail.com/grupoActividades/10/prosa.txt	grupoActividades	\N	10	\N	8	0	f
+19	hector@gmail.com/grupoActividades/10/prosa.txt	grupoActividades	\N	10	\N	8	0	f
+22	hector@gmail.com/actividad/32/prosa.txt	actividad	\N	\N	32	8	0	f
+23	hector@gmail.com/actividad/32/prosa.txt	actividad	\N	\N	32	8	0	f
+24	hector@gmail.com/subCategoria/2/tareafingeso.txt	subCategoria	2	\N	\N	8	0	f
+25	hector@gmail.com/grupoActividades/14/tareafingeso.txt	grupoActividades	\N	14	\N	8	0	f
+26	hector@gmail.com/grupoActividades/13/prosa.txt	grupoActividades	\N	13	\N	8	0	f
+20	hector@gmail.com/grupoActividades/10/9 Nivele Aplicacion Formacion Ingenieros (1).pdf	grupoActividades	\N	10	\N	8	0	f
+17	hector@gmail.com/actividad/13/9 Nivele Aplicacion Formacion Ingenieros (1).pdf	actividad	\N	\N	13	8	30	t
+27	hector@gmail.com/actividad/25/9 Nivele Aplicacion Formacion Ingenieros (1).pdf	actividad	\N	\N	25	8	140	t
+28	hector@gmail.com/actividad/35/lab2Dobble.txt	actividad	\N	\N	35	8	20	t
+31	hector@gmail.com/actividad/4/9 Nivele Aplicacion Formacion Ingenieros (1).pdf	actividad	\N	\N	4	4	2	t
+14	felipe@gmail.com/grupoActividades/9/tareafingeso.txt	grupoActividades	\N	9	\N	9	250	t
+16	hector@gmail.com/actividad/8/9 Nivele Aplicacion Formacion Ingenieros (1) (1).pdf	actividad	\N	\N	8	8	0	f
+32	hector@gmail.com/actividad/11/9 Nivele Aplicacion Formacion Ingenieros (1) (1).pdf	actividad	\N	\N	11	8	0	f
+33	hector@gmail.com/actividad/34/lab2Dobble.txt	actividad	\N	\N	34	8	0	f
+29	hector@gmail.com/actividad/1/lab2Dobble.txt	actividad	\N	\N	1	4	12	t
+30	hector@gmail.com/actividad/2/9 Nivele Aplicacion Formacion Ingenieros (1).pdf	actividad	\N	\N	2	4	4	t
+21	hector@gmail.com/actividad/45/prosa.txt	actividad	\N	\N	45	8	250	t
 \.
 
 
@@ -324,9 +340,9 @@ Colaborador de programas o proyectos de extensión de la universidad	11	t	250	6
 --
 
 COPY public.solicitudes (id_usuario, fecha_envio, id, puntuacion, estado, resultado_puntuacion, resultado_apelacion, resultado_evaluacion, resultado_final, id_comite, periodo) FROM stdin;
-5	2022-11-28	8	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2021-03-24
-5	2022-11-28	4	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2022-11-23
-7	2022-11-28	9	500	Comité de Puntuación del Departamento	\N	\N	\N	Pendiente	2	2021-03-24
+5	2022-11-28	8	500	Comité de Puntuación del Departamento	null	\N	\N	Pendiente	2	2021-03-24
+5	2022-11-28	4	500	Comité de Puntuación del Departamento	null	\N	\N	Pendiente	2	2022-11-23
+7	2022-11-28	9	500	Finalizada	Ayudante	\N	\N	Ayudante	5	2021-03-24
 \.
 
 
@@ -365,7 +381,7 @@ SELECT pg_catalog.setval('public.comites_id_seq', 5, true);
 -- Name: documentos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.documentos_id_seq', 17, true);
+SELECT pg_catalog.setval('public.documentos_id_seq', 33, true);
 
 
 --
