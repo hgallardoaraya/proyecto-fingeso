@@ -119,8 +119,12 @@ import ExpansionPanel from './ExpansionPanel.vue'
                     params.append('id_documento', this.documentoSubido.id);
                     params.append('puntaje', this.puntaje);                
                     params.append('valido', this.valido);
-                    const response = await this.$axios.post("/documento/addPuntaje", params, { withCredentials: true  });                    
-                    console.log(response);
+                    try{
+                        const response = await this.$axios.post("/documento/addPuntaje", params, { withCredentials: true  });                    
+                        alert("Puntaje guardado con éxito.");
+                    }catch{
+                        alert("Ocurrió un erorr al guardar el puntaje.");
+                    }                    
                 }else{
                     alert("No has ingresado un puntaje válido.");
                 }                

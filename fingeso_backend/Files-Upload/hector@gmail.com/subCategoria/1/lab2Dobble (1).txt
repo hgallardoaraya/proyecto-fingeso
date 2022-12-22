@@ -1,0 +1,745 @@
+%Constructores
+%Constructor TDA Carta
+%Dom: List 
+%Rec: List
+card(Card, [Card]).
+%Constructor TDA Deck o CardsSet
+%Dom: List 
+%Rec: List
+deck(Deck, [Deck]).
+
+
+%METAS PRINCIPALES
+%Dom: List X int X int X int X Var
+%Rec: List
+%Desc: Genera un set de cartas 
+cardsSet(Symbols, NumE, MaxC, Seed, CS) :-
+    N is NumE - 1,
+    NTotal is N*N+N+1,    
+    addNCards(Symbols, 0, NumE, N, [], CS1),
+    addN2Cards(Symbols, 0, N, CS1, CS2),
+    maxCValue(MaxC, NTotal, [NewMaxC]),
+    cut(CS2, NewMaxC, CS3),
+    len(CS3, CardsSetLength),
+    randomizeCardsSet(Seed, CardsSetLength, CS3, CS3, CS),
+    !.
+
+%Dom: List
+%Rec: bool
+%Desc: Determina si un set de cartas es válido
+cardsSetIsDobble(Deck) :-    
+    differentDeckCards(Deck).
+
+%Dom: List X int X Var
+%Rec: List
+%Desc: Retorna una carta en la posición indicada
+cardsSetNthCard([CardF|_], 0, [CardF]).
+cardsSetNthCard([_|Rest], I, CardF) :-
+    NewI is I - 1,
+    cardsSetNthCard(Rest, NewI, CardF),
+    !.
+    
+%Dom: List X Var
+%Rec: int
+%Desc: Retorna la cantidad total de cartas necesarias para construir un set de cartas válido en base a una carta de entrada
+cardsSetFindTotalCards(Card, CartasFaltantes) :-
+    len(Card, CardLength),
+    N is (CardLength - 1),
+    CartasFaltantes is N*N + N + 1.
+
+%Dom: List X Var
+%Rec: List
+%Desc: Retorna las cartas faltantes para construir un set de cartas válido en base a las cartas de entrada.
+cardsSetMissingCards([Head|Rest], MissingDeck) :-    
+    cardsSetFindTotalCards(Head, N),
+    len(Head, NCardSymbols),
+    getSymbols([Head|Rest], [], Symbols),
+    len(Symbols, NSymbols),
+    NMissingSymbols is N - NSymbols,
+    completeSymbols(Symbols, 97, AllSymbols, NMissingSymbols),
+    cardsSet(AllSymbols, NCardSymbols, N, 9999, FullDeck),
+    missingCards(FullDeck, [Head|Rest], [], MissingDeck, NCardSymbols),
+    !.
+
+%Dom: List X Var
+%Rec: string
+%Desc: Transforma un set de cartas de List a string
+cardsSetToString(Deck, StringDeck) :-
+    cardsSetToString(Deck, 1, "", StringDeck).
+cardsSetToString([], _, StringDeck, StringDeck).
+cardsSetToString([Card|Rest], Num, TempStringDeck, StringDeck) :-
+    string_concat(TempStringDeck, "Carta ", NewTempStringDeck1),
+    string_concat(NewTempStringDeck1, Num, NewTempStringDeck2),
+    string_concat(NewTempStringDeck2, ": ", NewTempStringDeck3),
+    cardsSetToString2(Card, NewTempStringDeck3, NewTempStringDeck4),
+    string_concat(NewTempStringDeck4, "   ************   ", NewTempStringDeck5),
+    NewNum is Num + 1,
+    cardsSetToString(Rest, NewNum, NewTempStringDeck5, StringDeck).
+
+%Dom: List X List X Var
+%Rec: List
+%Desc: Transforma un símbolo en string y lo concatena a un acumulador de strings
+cardsSetToString2([], NewStringDeck, NewStringDeck).
+cardsSetToString2([Sym|Rest], TempStringDeck, NewStringDeck) :-
+    term_string(Sym, StringSym),
+	string_concat(TempStringDeck, StringSym, NewTempStringDeck1),
+    string_concat(NewTempStringDeck1, " - ", NewTempStringDeck2),
+    cardsSetToString2(Rest, NewTempStringDeck2, NewStringDeck).
+  
+%METAS SECUNDARIAS
+%Dom: List X List X List X List X int
+%Rec: List
+%Desc: Funcion auxiliar de cardsSetMissingCards que compara el set completo con las cartas actuales y retorna la resta, es decir, las cartas faltantes
+missingCards([], _, MissingCards, MissingCards, _).
+missingCards([Card1|Rest1], ActualDeck, TempCards, MissingCards, NSymbols) :-
+    missingCards(Card1, ActualDeck, Rest1, ActualDeck, TempCards, MissingCards, NSymbols),
+    !.
+missingCards(Card1, [], Rest1, ActualDeck, TempCards, MissingCards, NSymbols) :-
+    insert(Card1, TempCards, NewTempCards),    
+    missingCards(Rest1, ActualDeck, NewTempCards, MissingCards, NSymbols),
+    !.
+missingCards(Card1, [Card2|Rest2], Rest1, ActualDeck, TempCards, MissingCards, NSymbols) :-
+    missingCards(Card1, Card2, 0, ContadorFinal),
+    not(ContadorFinal == NSymbols),    
+    missingCards(Card1, Rest2, Rest1, ActualDeck, TempCards, MissingCards, NSymbols),
+    !.
+missingCards(Card1, [Card2|_], Rest1, ActualDeck, TempCards, MissingCards, NSymbols) :-
+    missingCards(Card1, Card2, 0, ContadorFinal),
+    ContadorFinal == NSymbols,    
+    missingCards(Rest1, ActualDeck, TempCards, MissingCards, NSymbols),
+    !.
+missingCards([], _, Contador, Contador).
+missingCards([Sym1|Rest1], Card2, Contador, ContadorFinal) :-
+    differentDeckCards2(Sym1, Card2, Contador, NewContador),
+    missingCards(Rest1, Card2, NewContador, ContadorFinal),
+    !.
+
+%Dom: List X int X List X int
+%Rec: List
+%Desc: Funcion auxiliar que permite completar una lista de símbolos incompleta.
+completeSymbols(Symbols, _, Symbols, 0).
+completeSymbols(Symbols, Code, AllSymbols, N) :-
+    char_code(Sym, Code),
+    insertIfNotContains(Symbols, Sym, Code, NewCode, N, NewN, NewSymbols),
+    completeSymbols(NewSymbols, NewCode, AllSymbols, NewN).
+
+%Dom: List X sym/int/string X int X int X int X int X Var
+%Rec: List
+%Desc: Función auxiliar que inserta un símbolo en una lista si es que esta no lo contiene.
+insertIfNotContains(Symbols, Symbols).
+insertIfNotContains(Symbols, Sym, Code, NewCode, N, NewN, NewSymbols) :-
+    not(contains(Sym, Symbols)),
+    insert(Sym, Symbols, NewSymbols),
+    NewCode is Code + 1,
+    NewN is N - 1.
+insertIfNotContains(Symbols, Sym, Code, NewCode, N, NewN, NewSymbols) :-
+    contains(Sym, Symbols),
+    NewCode is Code,
+    NewN is N,
+    insertIfNotContains(Symbols, NewSymbols).
+
+%Dom: List X List X Var
+%Rec: List
+%Desc: Funcion auxiliar que permite obtener los símbolos que no se repiten entre dos listas de símbolos.
+getSymbols([], SymbolsF, SymbolsF).
+getSymbols([Head|Rest], Symbols, SymbolsF) :-
+    getSymbols1(Head, Symbols, NewSymbols),
+    getSymbols(Rest, NewSymbols, SymbolsF).
+
+getSymbols1([], Symbols, Symbols).
+getSymbols1([Sym|Rest], Symbols, SymbolsF) :-
+    getSymbols2(Sym, Symbols, NewSymbols),
+    getSymbols1(Rest, NewSymbols, SymbolsF).
+
+getSymbols2(0, Symbols, Symbols). 
+getSymbols2(Sym, Symbols, NewSymbols) :-
+    not(contains(Sym, Symbols)),
+    insert(Sym, Symbols, NewSymbols),
+    !.
+getSymbols2(Sym, Symbols, NewSymbols) :-
+    contains(Sym, Symbols),
+    getSymbols2(0, Symbols, NewSymbols),
+    !.
+
+%Dom: List
+%Rec: bool
+%Desc: Función auxiliar que retorna true o false si es que las cartas de un mazo son distintas entre sí y solo comparten un elemento en común.
+differentDeckCards([]).
+differentDeckCards([Card1|Rest]) :-
+    differentCardElements(Card1),
+    differentDeckCards(Card1, Rest, Rest).
+differentDeckCards(_, [], Rest) :-
+    differentDeckCards(Rest).
+differentDeckCards(Card1, [Card2|Rest1], Rest2) :-
+ differentDeckCards(Card1, Card2, 0, ContadorFinal),
+ ContadorFinal == 1,
+ differentDeckCards(Card1, Rest1, Rest2),
+    !.
+differentDeckCards([], _, Contador, Contador).
+differentDeckCards([SymC1|Rest1], Card2, Contador, ContadorFinal) :-
+    differentDeckCards2(SymC1, Card2, Contador, NewContador),
+    differentDeckCards(Rest1, Card2, NewContador, ContadorFinal),
+    !.
+    
+differentDeckCards2(_, [], Contador, Contador).
+differentDeckCards2(SymC1, [SymC2|Rest], Contador, ContadorFinal) :-
+    countIfSame(SymC1, SymC2, Contador, NewContador),
+	differentDeckCards2(SymC1, Rest, NewContador, ContadorFinal),
+    !.
+
+%Dom: sym/string/int X sym/string/int X int X Var
+%Rec: int
+%Desc: Función que aumenta un contador si es que dos símbolos son iguales.
+countIfSame(SymC1, SymC2, Contador, Res) :- 
+    SymC1 == SymC2,
+    Res is Contador + 1,
+    !.
+countIfSame(SymC1, SymC2, Contador, Res) :- 
+    not(SymC1 == SymC2), 
+    Res is Contador,
+    !.
+
+%Dom: List
+%Rec: bool
+%Desc: Función auxiliar que retorna true o false si es que los elementos de una carta son diferentes entre sí.
+differentCardElements([]).
+differentCardElements([Head|Rest]) :-
+    differentCardElements(Head, Rest, Rest),
+    !.
+differentCardElements(Head, [], Lst) :-
+    differentCardElements(Lst),
+    !.
+differentCardElements(Head, [Head2|Rest], Lst) :-
+   not(Head == Head2),
+    differentCardElements(Head, Rest, Lst),
+    !.
+
+%Dom: int X int X List x List x Var
+%Rec: List
+%Desc: Función auxiliar que aleatoriza las posiciones de las cartas de un mazo.
+randomizeCardsSet(_, _, [], NewDeck, NewDeck).
+randomizeCardsSet(S0, DeckLength, [Card|Rest], TempDeck, NewDeck) :-   
+    M is DeckLength,
+    AuxA is M//2,
+    generatePrimeNumber(AuxA, A),
+    C is A,
+    randFn(S0, A, C, M, 10, RandPos),    
+    get(TempDeck, RandPos, Card2),
+    getPos(TempDeck, Card, 0, CardPos),
+    replace(TempDeck, RandPos, Card, NewTempDeck1),
+    replace(NewTempDeck1, CardPos, Card2, NewTempDeck2),    
+    randomizeCardsSet(RandPos, DeckLength, Rest, NewTempDeck2, NewDeck),
+    !.
+
+%Dom: List X int X int X int X List X Var
+%Rec: List
+%Desc: Función auxiliar que retorna el set de cartas con N cartas. 
+addNCards(_, N1, N1, _, CS, FinalCS) :- deck(CS, [FinalCS]).
+addNCards(Symbols, I, N1, N2, CS, FinalCS) :-
+    get(Symbols, 0, Symbol),
+    insert(Symbol, [], Card),    
+    addNCards(Symbols, I, N1, 0, N2, Card, CS, FinalCS),
+    !.
+addNCards(Symbols, I, N1, N2, N2, Card, CS, FinalCS) :-
+    insert(Card, CS, NewCS),
+    NewI is I + 1,
+    addNCards(Symbols, NewI, N1, N2, NewCS, FinalCS),
+    !.
+addNCards(Symbols, I, N1, J, N2, Card, CS, FinalCS) :-
+    SymbolPos is (N2*I)+(J+1),
+    NewJ is J + 1,
+    get(Symbols, SymbolPos, Symbol),
+    insert(Symbol, Card, NewCard),
+    addNCards(Symbols, I, N1, NewJ, N2, NewCard, CS, FinalCS),
+   	!. 
+
+%Dom: List X int X int X int X List X Var
+%Rec: List
+%Desc: Función auxiliar que retorna el set de cartas con N^2 cartas.
+addN2Cards(_, N, N, CS, FinalCS) :- deck(CS, [FinalCS]).
+addN2Cards(Symbols, I, N, CS, FinalCS) :-
+    addN2Cards(Symbols, I, 0, N, CS, FinalCS),
+    !.
+addN2Cards(Symbols, I, N, N, CS, FinalCS) :-
+    NewI is I + 1,
+    addN2Cards(Symbols, NewI, N, CS, FinalCS),
+    !.
+addN2Cards(Symbols, I, J, N, CS, FinalCS) :-
+    SymbolPos is I + 1,
+	get(Symbols, SymbolPos, Symbol),
+    insert(Symbol, [], Card),
+    addN2Cards(Symbols, I, J, 0, N, Card, CS, FinalCS),
+    !.
+addN2Cards(Symbols, I, J, N, N, Card, CS, FinalCS) :-
+    NewJ is J + 1,
+    insert(Card, CS, NewCS),
+    addN2Cards(Symbols, I, NewJ, N, NewCS, FinalCS),
+    !.
+addN2Cards(Symbols, I, J, K, N, Card, CS, FinalCS) :-
+    NewK is K + 1,
+    SymbolPos is (N+2+N*(K)+(((I)*(K)+J) mod N) - 1),
+    get(Symbols, SymbolPos, Symbol),
+    insert(Symbol, Card, NewCard),
+    addN2Cards(Symbols, I, J, NewK, N, NewCard, CS, FinalCS),
+    !.
+
+%Dom: Var/int X int X Var
+%Rec: int
+%Desc: Función auxiliar que define el valor de maxC dependiendo de si es una variable o un número.
+maxCValue(X, Max, [Max]) :- var(X), !.
+maxCValue(X, _, [X]) :- not(var(X)), !.
+
+%METAS PRINCIPALES
+%Constructores
+%TDA Game
+%Num de turno, Area, AvailableCards, Players, NumPlayers, PlayerCards, Status, Turn
+%A: Cartas area de juego, AC: Cartas del Mazo, P: Lista de jugadores, NP: Número max. de jugadores, M: Modo de juego,
+%S: Estado del juego, T: Turno.
+%Dom: List X List X List X int X string X string X string/int
+%Rec: List
+game(A, AC, P, NP, M, S, T, [A, AC, P, NP, M, S, T]).
+
+%TDA Player
+%UserName, Points, Deck
+%N: UserName, P: Puntos
+%Dom: string X int
+%Rec: List
+player(N, P, [N, P]).
+
+%TDA Players
+%Dom: List
+%Rec: List
+players(Players, Players).
+
+%Dom: int X Deck/CardsSet/List X string X int X Var
+%Rec: List
+%Desc: Genera un escenario de juego de dobble inicial.
+dobbleGame(NPlayers, Deck, Mode, Seed, Game) :-
+    game([], Deck, [], NPlayers, Mode, "Inicio", Seed, Game).
+
+%Dom: string X game X Var
+%Rec: game
+%Desc: Registra un usuario
+dobbleGameRegister(UserName, GameIn, GameOut) :-
+    game(A, AC, P, NP, M, S, T, GameIn),
+    S == "Inicio",
+    not(contains([UserName, _], P)),
+    insert([UserName, 0], P, NewP),
+    len(NewP, NPLength),
+    NP >= NPLength,     
+    game(A, AC, NewP, NP, M, S, T, GameOut),
+    !.
+dobbleGameRegister(UserName, GameIn, GameOut) :-
+    game(A, AC, P, NP, M, S, T, GameOut),
+    contains([UserName, _], P),
+    delete(P, NewP),
+    game(A, AC, NewP, NP, M, S, T, GameIn),    
+    !.
+
+%Dom: game X string
+%Rec: string
+%Desc: Retorna el nombre del usuario de turno
+dobbleGameWhoseTurnIsIt(Game, UserName) :-
+    game(_,_,_,_,_,_,UserName,Game).
+
+%Dom: game X null X game
+%Rec: List
+%Desc: Hace una jugada inicial en base al modo stack
+dobbleGamePlay(GameIn, null, GameOut) :-    
+    game(_, AC, P, NP, M, S, T, GameIn),
+    not(S == "Inicio"),
+    not(S == "StackMode"),
+    len(AC, ACLength),
+    ACLength > 1,    
+    pop(AC, NewAC1, E1),
+    insert(E1, [], NewA1),
+    pop(NewAC1, NewAC2, E2),
+    insert(E2, NewA1, NewA2),   
+    game(NewA2, NewAC2, P, NP, M, "StackMode", FirstTurn, GameOut),
+    !.
+dobbleGamePlay(GameIn, null, GameOut) :-    
+    game(_, AC, P, NP, M, S, T, GameIn),
+    S == "Inicio",    
+    len(P, Module),
+    changeSeed(T, Module, NewSeed),
+    AuxA is Module//2,
+    generatePrimeNumber(AuxA, A),
+    C is A,
+    randFn(NewSeed, A, C, Module, 10, RandTurn),
+    get(P, RandTurn, FirstPlayer),
+    player(FirstTurn, _, FirstPlayer),
+    len(AC, ACLength),
+    ACLength > 1,    
+    pop(AC, NewAC1, E1),
+    insert(E1, [], NewA1),
+    pop(NewAC1, NewAC2, E2),
+    insert(E2, NewA1, NewA2),   
+    game(NewA2, NewAC2, P, NP, M, "StackMode", FirstTurn, GameOut),
+    !.
+
+%Dom: game X [spotIt X string X symbol] game
+%Rec: game
+%Desc: Permite a un usuario realizar una jugada (spotIt). 
+dobbleGamePlay(GameIn, [spotIt, UserName, Symbol], GameOut) :-
+	game(A, AC, P, NP, M, S, T, GameIn),
+    dobbleSpotItAux(A, Symbol, UserName, P, NewP),
+   	string_concat("Jugada spotIt de ", UserName, NewS),
+    string_concat(NewS, ", ha acertado con el ", NewS2),
+    string_concat(NewS2, Symbol, NewS3),
+    player(UserName, _, Player),
+    getByIncompleteElement([UserName, _], P, ActualPlayer),
+    nextTurn(P, ActualPlayer, NewT),
+    game([], AC, NewP, NP, M, NewS3, NewT, GameOut),
+    !.
+dobbleGamePlay(GameIn, [spotIt, UserName, Symbol], GameOut) :-
+	game(A, AC, P, NP, M, S, T, GameIn),
+    not(dobbleSpotItAux(A, Symbol, UserName, P, NewP)),
+   	string_concat("Jugada spotIt de ", UserName, NewS),
+    string_concat(NewS, ", ha fallado con el ", NewS2),
+    string_concat(NewS2, Symbol, NewS3),
+    getByIncompleteElement([UserName, _], P, ActualPlayer),
+    nextTurn(P, ActualPlayer, NewT),
+    game(A, AC, NewP, NP, M, NewS3, NewT, GameOut),
+    !.
+dobbleGamePlay(GameIn, [pass], GameOut) :-
+	%pasar el turno, es decir, las cartas en Area (si es que hay) vuelven al mazo.
+    %explicar interpretacion de esta funcionalidad
+	game(A, AC, P, NP, M, S, T, GameIn),
+    dobblePassAux(A, AC, NewAC),
+    getByIncompleteElement([T, _], P, ActualPlayer),
+    nextTurn(P, ActualPlayer, NewT),
+    game([], NewAC, P, NP, M, "Paso de turno", NewT, GameOut),
+    !.
+dobbleGamePlay(GameIn, [finish], GameOut) :-
+    game(A, AC, P, NP, M, S, T, GameIn),
+    whoWins(P, 0, [], Winners),
+    term_string(Winners, SWinners),
+    string_concat("Juego Finalizado, el/los ganador/es y sus puntajes es/son ", SWinners, NewS),
+    game(A, AC, P, NP, M, NewS, "", GameOut),
+    !.
+
+%Dom: game X Var
+%Rec: string
+%Desc: Permite a un usuario obtener el estado de juego.
+dobbleGameStatus(Game, Status) :-
+    game(_, _, _, _, _, Status, _, Game),
+    !.
+
+%Dom: game X string/symbol X Var
+%Rec: int
+%Desc: Permite obtener el puntaje de un usuario en base a su nombre.
+dobbleGameScore(Game, UserName, UserPoints) :-
+    not(number(UserPoints)),
+    game(_, _, P, _, _, _, _, Game),
+    getByIncompleteElement([UserName, _], P, [_, UserPoints]),
+    !.
+
+%Dom: game X Var
+%Rec: string
+%Desc: Transforma game en string
+dobbleGameToString(Game, StringGame) :-    
+	game(A, AC, P, NP, M, S, T, Game),    
+    cardsSetToString(A, AString),
+    cardsSetToString(AC, ACString),  
+    playersToString(P, StringPlayers),
+    term_string(NP, NPString),
+    term_string(M, MString),
+    term_string(S, SString),
+    term_string(T, TString),            
+    string_concat("Cartas en Area de Juego:\n", AString, TS1),
+    string_concat(TS1, "\n\n\nCartas en el Mazo:\n", TS2),
+    string_concat(TS2, ACString, TS3),
+    string_concat(TS3, "\n\nJugadores: \n\n", TS4),
+    string_concat(TS4, StringPlayers, TS5),
+    string_concat(TS5, "\n\n\nNumero de Jugadores Maximos a Registrar: ", TS6),
+    string_concat(TS6, NPString, TS7),
+    string_concat(TS7, "\n\n\nModo de juego: ", TS8),
+    string_concat(TS8, MString, TS9),
+    string_concat(TS9, "\n\n\nEstado de la partida: ", TS10),
+    string_concat(TS10, SString, TS11),
+    string_concat(TS11, "\n\nTurno de: ", TS12),
+    string_concat(TS12, TString, StringGame),  
+    !.    
+
+%METAS SECUNDARIAS
+%Dom: List X Player X Var
+%Rec: string
+%Desc: Retorna el nombre de usuario del jugador del siguiente turno
+nextTurn(Players, ActualPlayer, NextTurnPlayerUserName) :-
+    getPos(Players, ActualPlayer, 0, ActualPlayerPos),
+    len(Players, PlayersLength),    
+    PlayersLength - 1 > ActualPlayerPos,
+    NextTurnPos is ActualPlayerPos + 1,    
+    get(Players, NextTurnPos, NewTurnPlayer),
+    player(NextTurnPlayerUserName, _, NewTurnPlayer),
+    !.    
+nextTurn(Players, ActualPlayer, NextTurnPlayerUserName) :-
+    getPos(Players, ActualPlayer, 0, ActualPlayerPos),
+    len(Players, PlayersLength),    
+    ActualPlayerPos >= PlayersLength - 1,
+    NextTurnPos is 0,    
+    get(Players, NextTurnPos, NewTurnPlayer),
+    player(NextTurnPlayerUserName, _, NewTurnPlayer),
+    !.       
+
+%Dom: Players X Var
+%Rec: string
+%Desc: Transforma una lista de jugadores en string.
+playersToString(Players, StringPlayers) :-
+    playersToString(Players, 1, "", StringPlayers).
+playersToString([], _, StringPlayers, StringPlayers).
+playersToString([Player|Rest], Num, TempStringPlayers, StringPlayers) :-
+    string_concat(TempStringPlayers, "Jugador ", NewTempStringPlayers1),
+    string_concat(NewTempStringPlayers1, Num, NewTempStringPlayers2),
+    string_concat(NewTempStringPlayers2, ": ", NewTempStringPlayers3),
+    playersToString2(Player, NewTempStringPlayers3, NewTempStringPlayers4),
+    string_concat(NewTempStringPlayers4, "\n\n", NewTempStringPlayers5),
+    NewNum is Num + 1,
+    playersToString(Rest, NewNum, NewTempStringPlayers5, StringPlayers),
+    !.
+playersToString2([], NewStringPlayers, NewStringPlayers).
+playersToString2(Player, TempStringPlayers, NewStringPlayers) :-
+    player(UserName, UserPoints, Player),
+    term_string(UserPoints, SUserPoints),
+	string_concat(TempStringPlayers, UserName, NewTempStringPlayers1),
+    string_concat(NewTempStringPlayers1, ", Puntos: ", NewTempStringPlayers2),
+    string_concat(NewTempStringPlayers2, SUserPoints, NewStringPlayers).    
+
+%Dom: Deck X Symbol/string X string/symbol X Players X Var
+%Rec: Players
+%Desc: Función que verifica la jugada de un usuario y le da puntaje dependiendo de si es correcta o no.
+dobbleSpotItAux([Card1|[Card2|_]], Symbol, UserName, P, NewP) :-
+    contains(Symbol, Card1),
+    contains(Symbol, Card2),
+    getByIncompleteElement([UserName, _], P, [_, UserPoints]),
+    NewUserPoints is UserPoints + 1,
+    player(UserName, NewUserPoints, NewPlayer),
+    set([UserName, UserPoints], NewPlayer, P, NewP),
+    !.
+
+%Dom: Deck X Deck X Var
+%Rec: Deck
+%Desc: Devuelve las cartas del área de juego al mazo.
+dobblePassAux([], NewAC, NewAC).
+dobblePassAux([Head|Rest], AC, NewAC) :-
+    insert(Head, AC, NewTempAC),
+    dobblePassAux(Rest, NewTempAC, NewAC),
+    !.
+    
+%Dom: game X int X List X Var
+%Rec: List
+%Desc: Retorna una lista con los ganadores de la partida.
+whoWins([], _, Winners, Winners).
+whoWins([Player|Rest], Max, TempWinners, Winners) :-
+    player(_, Points, Player),
+    whoWins(Player, Points, Max, NewMax, TempWinners, NewTempWinners),   	
+    whoWins(Rest, NewMax, NewTempWinners, Winners),
+    !.
+whoWins(Winners, Winners) :- !.
+whoWins(Player, Points, Max, NewMax, TempWinners, Winners) :-
+    Points > Max,    
+    insert(Player, [], Winners),
+    NewMax is Points,
+    !.
+whoWins(Player, Points, Max, NewMax, TempWinners, Winners) :-
+    Max > Points,    
+    whoWins(TempWinners, Winners),
+	NewMax is Max,
+    !.
+whoWins(Player, Points, Max, NewMax, TempWinners, Winners) :-
+    Points == Max,
+    insert(Player, TempWinners, Winners),
+    NewMax is Max,
+    !.
+
+%METAS PRINCIPALES, UTILIZADAS COMO SECUNDARIAS EN GAME Y CARDSSET
+%TDA Lista
+%Reglas/Operaciones
+%Dom: List x int X Var
+%Rec: List
+%Desc: Corta una lista en la posición indicada.
+cut(_, 0, []).
+cut([Head|Rest], Pos, [Head|List]) :-
+    NewPos is Pos - 1,
+    cut(Rest, NewPos, List).
+
+%Dom: List X Var
+%Rec: List
+%Desc: Borra el último elemento de una lista
+delete([Head], []).
+delete([Head|Rest], [Head|List]) :-
+    delete(Rest, List),
+    !.
+
+%Dom: List X Var X Var
+%Rec: List, E
+%Desc: Retorna el último elemento de una lista y la lista con dicho elemento eliminado.
+pop([Head], [], Head).
+pop([Head|Rest], [Head|List], E) :-
+    pop(Rest, List, E),
+    !.
+
+%Dom: Element X List X Var
+%Rec: Element
+%Desc: Permite obtener un elemento de una lista con una parte parcial de ese elemento.
+getByIncompleteElement(Head, [Head|_], Head) :- !.
+getByIncompleteElement(E, [_|Head], Res) :- 	
+	getByIncompleteElement(E, Head, Res),
+    !.
+
+%Dom: List X int X Var
+%Rec: Element
+%Desc: Permite obtener un elemento de una lista en base a su posición.
+get( [Head|_], 0, Head ).
+get( [_|Head], Pos, E) :- 
+	PrevPos is Pos-1,
+	get( Head, PrevPos, E ).
+
+%Dom: List X Element X int X Var
+%Rec: int
+%Desc: Retorna la posición de un elemento en una lista.
+getPos([E|_], E, Pos, Pos).
+getPos([_|Rest], E, It, Pos) :-
+    NewIt is It + 1,
+    getPos(Rest, E, NewIt, Pos),
+    !.
+        
+%Dom: Element X List X Var
+%Rec: List
+%Desc: Permite insertar un elemento en una lista.
+insert( E, [], [E] ).
+insert( E, [Head|Rest], [Head|List] ) :-
+        insert( E, Rest, List ).
+
+%Dom: Element X List
+%Rec: bool
+%Desc: Verifica si una lista contiene un elemento.
+contains(E, [E|_]) :- !.
+contains(E, [_|Rest]) :-
+    contains(E, Rest),    
+    !.
+
+%Dom: Element X Element X List X Var
+%Rec: List
+%Desc: Modifica un elemento de una lista.
+set( _, _, [], []).
+set( Old, New, [Old|Rest], [New|NewRest] ):- 
+    set( Old, New, Rest, NewRest ),
+    !.
+set( Old, New, [Head|Rest],[Head|NewRest] ):- 
+    Head \= Old, 
+    set( Old, New, Rest, NewRest),
+    !.
+
+%Dom: List X Var
+%Rec: Int
+%Desc: Retorna el tamaño de una lista
+len([], LenResult):-
+    LenResult is 0.
+
+len([_|Rest], LenResult):-
+    len(Rest, L),
+    LenResult is L + 1.
+
+%Dom: List X int X Element X Var
+%Rec: List
+%Desc: Reemplaza un elemento en una posición I de una lista.
+replace([_|T], 0, X, [X|T]).
+replace([H|T], I, X, [H|R]):- 
+    I > -1, 
+    NI is I-1, 
+    replace(T, NI, X, R), 
+    !.
+replace(L, _, _, L).
+
+%ALEATORIZACION
+%METAS SECUNDARIAS
+%Dom: int X int X int X int X int X Var
+%Rec: int
+%Desc: Retorna un número pseudo aleatorio.
+randFn(RandN, _, _, _, 0, RandN).
+randFn(S0, A, C, M, It, RandN) :-
+    NewS is ((S0*A) + C) mod M,
+    NewIt is It - 1,
+    randFn(NewS, A, C, M, NewIt, RandN).
+    
+%Dom: int
+%Rec: bool
+%Desc: Retorna true o false si es que un número es primo.
+isPrime(2) :- true,!.
+isPrime(X) :- X < 2,!,false.
+isPrime(X) :- not(divisible(X, 2)).
+
+divisible(X,Y) :- 0 is X mod Y, !.
+divisible(X,Y) :- X > Y+1, divisible(X, Y+1).
+
+%Dom: int X Var
+%Rec: int
+%Desc: Permite obtener el primer numero primo descendiendo desde un valor N de entrada.
+generatePrimeNumber(1, 2).
+generatePrimeNumber(N, PrimeNum) :-
+    isPrime(N),
+    PrimeNum is N,
+    !.
+generatePrimeNumber(N, PrimeNum) :-
+    not(isPrime(N)),
+    NewN is N - 1,
+    generatePrimeNumber(NewN, PrimeNum),
+    !.
+
+%Dom: int X int X Var
+%Rec: int
+%Desc: Retorna una nueva semilla si es que la semilla actual no es menor que el modulo.
+changeSeed(Seed, M, NewSeed) :-
+    M > Seed,
+    NewSeed is Seed.
+changeSeed(Seed, M, NewSeed) :-
+    Seed >= M,
+    NewSeed1 is Seed - 1,
+    changeSeed(NewSeed1, M, NewSeed).
+
+% EJEMPLOS PARA CADA REQUERIMIENTO FUNCIONAL TANTO DE CARDSSET COMO DE GAME
+%   cardsSet([1,2,3,4,5,6,7], 3, MaxC, 4, CS).
+%   cardsSet([1,2,3,4,5,6,7], 3, 2, 4, CS).
+%   cardsSet([ "flor", "oso", "peluche", "palta", "chinita", "jirafa", "abeja"], 3, 2, 4, CS).
+%   cardsSet([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,52,53,54, 55, 56], 8, MaxC, 5, CS)
+
+%   cardsSetIsDobble([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]]).
+%   cardsSetIsDobble([[1, 2, 3], [2, 4, 6], [1, 4, 5], [9, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]]).
+%   cardsSetIsDobble([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 3, 3], [3, 4, 7], [1, 6, 7], [2, 5, 7]]).
+
+%   cardsSetNthCard([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]], 0, Card) 
+%   cardsSetNthCard([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]], 4, Card)
+%   cardsSetNthCard([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]], 6, Card)
+
+%   cardsSetFindTotalCards([1,2,3], N)
+%   cardsSetFindTotalCards([4, 7, 9, 11], N)
+%   cardsSetFindTotalCards([1, 2, 3, 4, 5, 6, 7], N)
+
+%   cardsSetMissingCards([[1, 2, 3], [2, 4, 6]], MissingCards)
+%   cardsSetMissingCards([[4, 7, 9, 11]], MissingCards)
+%   cardsSetMissingCards([[8, 14, 20, 26, 32, 38, 44, 56]]], MissingCards)
+
+$   cardsSetToString([[1, 2, 3], [2, 4, 6], [1, 4, 5], [3, 5, 6], [3, 4, 7], [1, 6, 7], [2, 5, 7]], CSString)
+%   lo mismo para cualquier CS generado arriba
+
+% PRUEBA GENERAL DE FUNCIONALIDADES DE GAME
+%   cardsSet([1,2,3,4,5,6,7], 3, 7, 5, CS), dobbleGame(2, CS, "stackMode", 4, Game), dobbleGameRegister("Hector", Game, GO1), dobbleGameRegister("Felipe", GO1, GO2), dobbleGamePlay(GO2, null, GO3), dobbleGamePlay(GO3, [spotIt, "Hector", 4], GO4), dobbleGamePlay(GO4, null, GO5), dobbleGamePlay(GO5, [spotIt, "Felipe", 1], GO6), dobbleGamePlay(GO6, [pass], GO7), dobbleGamePlay(GO7, [finish], GO8)
+
+%En base a juegos generados arriba
+%   dobbleGameWhoseTurnIsIt(Game, Turn)
+%   dobbleGameWhoseTurnIsIt(GO3, Turn)
+%   dobbleGameWhoseTurnIsIt(GO4, Turn)
+
+%   dobbleGameScore(GO4, "Hector", Ptje)
+%   dobbleGameScore(GO4, "Felipe", Ptje)
+
+%   dobbleGameToString(GO4, StringGO4)
+%   Lo mismo con cualquier juego generado arriba
+
+
+
+
+
+
+
