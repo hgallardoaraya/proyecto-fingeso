@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>grupo3</groupId>
-	<artifactId>fingeso_backend</artifactId>
+	<artifactId>fingeso-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>prosyscom</name>
 	<description>Backend aplicación jerarquización académica USACH para el proyecto asignatura Fundamentos de Ingeniería de Software.</description>
